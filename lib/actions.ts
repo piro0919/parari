@@ -2,7 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { deliveryKey, originalKey, presignUpload } from "@/lib/r2";
+import {
+  deliveryKey,
+  originalKey,
+  presignDelivery,
+  presignOriginal,
+} from "@/lib/r2";
 
 const HANDLE = /^[a-z0-9_]{2,20}$/;
 
@@ -80,9 +85,9 @@ export async function createEpisode(pages: PageUpload[]) {
       return {
         pageIndex: page.pageIndex,
         deliveryKey: dKey,
-        deliveryUrl: await presignUpload(dKey, "image/webp"),
+        deliveryUrl: await presignDelivery(dKey),
         originalKey: oKey,
-        originalUrl: await presignUpload(oKey, page.originalContentType),
+        originalUrl: await presignOriginal(oKey, page.originalContentType),
       };
     }),
   );

@@ -11,11 +11,12 @@ const client = new S3Client({
   },
 });
 
-const BUCKET = process.env.R2_BUCKET!;
+// Two buckets on purpose. The delivery bucket is world-readable; the originals
+// bucket is not. Keeping them together would let anyone derive the full-size
+// key from the delivery key and pull the uncompressed art.
+const DELIVERY_BUCKET = process.env.R2_BUCKET!;
+const ORIGINALS_BUCKET = process.env.R2_ORIGINALS_BUCKET!;
 
-// Pages are uploaded straight from the browser, so nothing large ever passes
-// through the server. Two objects per page: the WebP we serve, and the
-// untouched original we keep so the delivery copy can be rebuilt later.
 export function deliveryKey(episodeId: string, pageIndex: number) {
   return `${episodeId}/${String(pageIndex).padStart(3, "0")}.webp`;
 }
@@ -25,18 +26,18 @@ export function originalKey(
   pageIndex: number,
   extension: string,
 ) {
-  return `${episodeId}/original/${String(pageIndex).padStart(3, "0")}.${extension}`;
+  return `${episodeId}/${String(pageIndex).padStart(3, "0")}.${extension}`;
 }
 
 export function publicUrl(key: string) {
   return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${key}`;
 }
 
-export async function presignUpload(key: string, contentType: string) {
+function presign(bucket: string, key: string, contentType: string) {
   return getSignedUrl(
     client,
     new PutObjectCommand({
-      Bucket: BUCKET,
+      Bucket: bucket,
       Key: key,
       ContentType: contentType,
       // Images are immutable once written: the key contains the episode id.
@@ -44,4 +45,12 @@ export async function presignUpload(key: string, contentType: string) {
     }),
     { expiresIn: 600 },
   );
+}
+
+export function presignDelivery(key: string) {
+  return presign(DELIVERY_BUCKET, key, "image/webp");
+}
+
+export function presignOriginal(key: string, contentType: string) {
+  return presign(ORIGINALS_BUCKET, key, contentType);
 }
