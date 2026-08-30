@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(npm run dev)",
+      "Bash(npm run lint)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx next typegen)",
+      "Bash(supabase start)",
+      "Bash(supabase stop)",
+      "Bash(supabase status:*)",
+      "Bash(supabase migration list:*)",
+      "Bash(supabase migration new:*)",
+      "Bash(npx wrangler r2 bucket list)",
+      "Bash(npx wrangler r2 bucket cors list:*)",
+      "Bash(npx wrangler whoami)",
+      "Bash(vercel env ls)",
+      "Bash(vercel inspect:*)",
+      "Bash(vercel project protection)"
+    ]
+  }
+}
