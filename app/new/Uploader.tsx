@@ -7,6 +7,7 @@ import {
   publishEpisode,
   type UploadedPage,
 } from "@/lib/actions";
+import { CACHE_CONTROL } from "@/lib/r2/cache-control";
 
 // Long edge and quality agreed up front: Twitter-bound manga is drawn around
 // 2048px tall, and WebP holds thin lines and lettering better than JPEG.
@@ -38,7 +39,8 @@ async function put(url: string, blob: Blob, contentType: string) {
   const response = await fetch(url, {
     method: "PUT",
     body: blob,
-    headers: { "content-type": contentType },
+    // Both headers are part of the signature, so they have to match exactly.
+    headers: { "cache-control": CACHE_CONTROL, "content-type": contentType },
   });
   if (!response.ok) throw new Error("アップロードに失敗しました");
 }

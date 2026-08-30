@@ -1,5 +1,6 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { CACHE_CONTROL } from "./cache-control";
 
 // R2 speaks the S3 API. Region is always "auto".
 const client = new S3Client({
@@ -40,8 +41,7 @@ function presign(bucket: string, key: string, contentType: string) {
       Bucket: bucket,
       Key: key,
       ContentType: contentType,
-      // Images are immutable once written: the key contains the episode id.
-      CacheControl: "public, max-age=31536000, immutable",
+      CacheControl: CACHE_CONTROL,
     }),
     { expiresIn: 600 },
   );
