@@ -12,6 +12,7 @@ import {
 } from "@/lib/r2";
 
 const HANDLE = /^[a-z0-9_]{2,20}$/;
+const X_HANDLE = /^[A-Za-z0-9_]{1,15}$/;
 
 async function requireUser() {
   const supabase = await createClient();
@@ -60,6 +61,34 @@ export async function claimHandle(_prev: unknown, formData: FormData) {
 
   revalidatePath("/new");
   return { error: null };
+}
+
+// Unlike the handle, this one is not a URL on Parari, so it can be changed or
+// cleared. Emptying the field is how an author unlinks.
+export async function setXHandle(_prev: unknown, formData: FormData) {
+  const { supabase, user } = await requireUser();
+  const entered = String(formData.get("x_handle") ?? "")
+    .trim()
+    .replace(/^@/, "");
+
+  if (entered && !X_HANDLE.test(entered)) {
+    return {
+      error: "X のユーザー名は英数字とアンダースコア15文字までです",
+      saved: false,
+    };
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ x_handle: entered || null })
+    .eq("id", user.id);
+
+  if (error) return { error: "保存できませんでした", saved: false };
+
+  const handle = await ownHandle(supabase, user.id);
+  if (handle) revalidatePath(`/${handle}`);
+
+  return { error: null, saved: true };
 }
 
 // Posted as a plain form action, so it has to end somewhere: the top page is

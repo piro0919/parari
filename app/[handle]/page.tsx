@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { publicUrl } from "@/lib/r2";
 import { signOut } from "@/lib/actions";
 import { EpisodeControls } from "./EpisodeControls";
+import { XLink } from "./XLink";
 
 export async function generateMetadata({
   params,
@@ -22,7 +23,7 @@ export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, handle")
+    .select("id, handle, x_handle")
     .eq("handle", handle)
     .maybeSingle();
 
@@ -51,9 +52,12 @@ export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">
       <div className="flex items-baseline justify-between gap-4">
-        <h1 className="font-mono text-xl font-semibold tracking-tight">
-          {profile.handle}
-        </h1>
+        <div>
+          <h1 className="font-mono text-xl font-semibold tracking-tight">
+            {profile.handle}
+          </h1>
+          <XLink xHandle={profile.x_handle} isOwner={isOwner} />
+        </div>
         {isOwner ? (
           // The author lands here after posting, so this is where the way to
           // post again belongs.
