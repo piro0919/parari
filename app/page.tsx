@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { EpisodeCover } from "@/app/EpisodeCover";
+import { SiteFooter } from "@/app/SiteFooter";
 import { formatDate } from "@/lib/date";
 import { createAnonClient } from "@/lib/supabase/anon";
 
@@ -93,6 +94,7 @@ export default async function Home() {
           </ul>
         </section>
       ) : null}
+      <SiteFooter />
     </main>
   );
 }

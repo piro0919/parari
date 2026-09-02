@@ -2,6 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { HandleForm } from "./HandleForm";
+import { SiteFooter } from "@/app/SiteFooter";
+import { SiteHeader } from "@/app/SiteHeader";
 import { Uploader } from "./Uploader";
 
 export default async function NewEpisodePage() {
@@ -19,7 +21,9 @@ export default async function NewEpisodePage() {
     .maybeSingle();
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-8 px-6 py-16">
+    <main className="flex flex-1 flex-col">
+      <SiteHeader />
+      <div className="flex flex-1 flex-col items-center justify-center gap-8 px-6 py-16">
       {profile ? (
         <>
           <Uploader handle={profile.handle} />
@@ -33,6 +37,8 @@ export default async function NewEpisodePage() {
       ) : (
         <HandleForm />
       )}
+      </div>
+      <SiteFooter />
     </main>
   );
 }

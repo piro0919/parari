@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { createAnonClient } from "@/lib/supabase/anon";
 import { createClient } from "@/lib/supabase/server";
 import { publicUrl } from "@/lib/r2";
+import { SiteFooter } from "@/app/SiteFooter";
+import { SiteHeader } from "@/app/SiteHeader";
 import { Viewer } from "./Viewer";
 
 export async function generateMetadata({
@@ -80,6 +82,7 @@ export default async function EpisodePage({
 
   return (
     <main className="flex flex-1 flex-col">
+      <SiteHeader />
       <header className="flex items-center justify-between gap-4 border-b border-line px-6 py-3">
         <Link
           href={`/${handle}`}
@@ -109,28 +112,33 @@ export default async function EpisodePage({
         ) : null}
       </header>
       <Viewer pages={pages} />
-      <footer className="flex items-center justify-between gap-4 border-t border-line px-6 py-4 text-sm">
-        {older ? (
-          <Link
-            href={`/${handle}/${older.id}`}
-            className="text-ink underline-offset-4 hover:underline"
-          >
-            ← 前の話
-          </Link>
-        ) : (
-          <span />
-        )}
-        {newer ? (
-          <Link
-            href={`/${handle}/${newer.id}`}
-            className="text-ink underline-offset-4 hover:underline"
-          >
-            次の話 →
-          </Link>
-        ) : (
-          <span />
-        )}
-      </footer>
+      {/* Nothing to show when an episode stands alone; an empty rule reads as
+          a missing link. */}
+      {older || newer ? (
+        <footer className="flex items-center justify-between gap-4 border-t border-line px-6 py-4 text-sm">
+          {older ? (
+            <Link
+              href={`/${handle}/${older.id}`}
+              className="text-ink underline-offset-4 hover:underline"
+            >
+              ← 前の話
+            </Link>
+          ) : (
+            <span />
+          )}
+          {newer ? (
+            <Link
+              href={`/${handle}/${newer.id}`}
+              className="text-ink underline-offset-4 hover:underline"
+            >
+              次の話 →
+            </Link>
+          ) : (
+            <span />
+          )}
+        </footer>
+      ) : null}
+      <SiteFooter />
     </main>
   );
 }

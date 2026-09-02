@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { SiteFooter } from "@/app/SiteFooter";
+import { SiteHeader } from "@/app/SiteHeader";
 
 // Reached by a mistyped handle or an episode that has since been taken down.
 // Both are dead ends without a way back to something readable.
 export default function NotFound() {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
+    <main className="flex flex-1 flex-col">
+      <SiteHeader />
+      <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-16 text-center">
       <div>
         <h1 className="text-2xl font-light tracking-[-0.02em] text-ink-strong">
           ページが見つかりません
@@ -19,6 +23,8 @@ export default function NotFound() {
       >
         ホームに戻る
       </Link>
+      </div>
+      <SiteFooter />
     </main>
   );
 }

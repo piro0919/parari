@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/date";
 import { signOut } from "@/lib/actions";
 import { EpisodeCover } from "@/app/EpisodeCover";
+import { SiteFooter } from "@/app/SiteFooter";
+import { SiteHeader } from "@/app/SiteHeader";
 import { EpisodeControls } from "./EpisodeControls";
 import { WorkList } from "./WorkList";
 import { XLink } from "./XLink";
@@ -74,17 +76,12 @@ export default async function AuthorPage({
     : { data: null };
 
   return (
-    <main className="flex-1">
+    <main className="flex flex-1 flex-col">
+      <SiteHeader />
       <section className="border-b-2 border-line px-6 py-14 sm:px-10">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <Link
-              href="/"
-              className="font-label text-xs tracking-[0.1em] text-ink-muted uppercase underline-offset-4 hover:underline"
-            >
-              Parari
-            </Link>
-            <h1 className="mt-3 text-[clamp(2rem,5vw,2.5rem)] leading-tight font-light tracking-[-0.02em] text-ink-strong">
+            <h1 className=" text-[clamp(2rem,5vw,2.5rem)] leading-tight font-light tracking-[-0.02em] text-ink-strong">
               {profile.handle}
             </h1>
             <XLink xHandle={profile.x_handle} isOwner={isOwner} />
@@ -200,6 +197,7 @@ export default async function AuthorPage({
           </nav>
         ) : null}
       </div>
+      <SiteFooter />
     </main>
   );
 }

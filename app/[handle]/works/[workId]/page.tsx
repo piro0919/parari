@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EpisodeCover } from "@/app/EpisodeCover";
+import { SiteFooter } from "@/app/SiteFooter";
+import { SiteHeader } from "@/app/SiteHeader";
 import { formatDate } from "@/lib/date";
 import { createAnonClient } from "@/lib/supabase/anon";
 
@@ -57,7 +59,8 @@ export default async function WorkPage({
   if (!loaded) notFound();
 
   return (
-    <main className="flex-1">
+    <main className="flex flex-1 flex-col">
+      <SiteHeader />
       <section className="border-b-2 border-line px-6 py-14 sm:px-10">
         <Link
           href={`/${handle}`}
@@ -96,6 +99,7 @@ export default async function WorkPage({
           <p className="text-sm text-ink-muted">公開中の話はありません。</p>
         )}
       </div>
+      <SiteFooter />
     </main>
   );
 }

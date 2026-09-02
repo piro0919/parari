@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { SiteFooter } from "@/app/SiteFooter";
+import { SiteHeader } from "@/app/SiteHeader";
 import { LoginButton } from "./LoginButton";
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
@@ -14,7 +16,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   if (user) redirect(next);
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-8 px-6">
+    <main className="flex flex-1 flex-col">
+      <SiteHeader />
+      <div className="flex flex-1 flex-col items-center justify-center gap-8 px-6 py-16">
       <div className="text-center">
         <h1 className="text-3xl font-light tracking-[-0.02em] text-ink-strong">
           Parari
@@ -24,6 +28,8 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         </p>
       </div>
       <LoginButton next={next} />
+      </div>
+      <SiteFooter />
     </main>
   );
 }
