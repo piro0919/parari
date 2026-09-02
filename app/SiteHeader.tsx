@@ -1,23 +1,13 @@
 import Link from "next/link";
 
-// Every page except the front page carries this: without it, a reader who
-// arrived on an episode from a tweet had no way to the rest of the service,
-// and /new and /login were dead ends short of the back button.
-// It reads no cookies on purpose, so the pages carrying it stay cacheable —
-// /new sends a signed-out visitor to the login page anyway.
+// ロゴと投稿への導線だけ。見た目は付けていない——並べ方（左右振り分けと
+// 上下の余白、下の罫）以外のクラスは、デザインを決めてから足す。
+// cookie を読まないので、これを載せたページはキャッシュできる。
 export function SiteHeader() {
   return (
-    <header>
-      <Link
-        href="/"
-      >
-        Parari
-      </Link>
-      <Link
-        href="/new"
-      >
-        投稿する
-      </Link>
+    <header className="flex items-center justify-between border-b px-6 py-3">
+      <Link href="/">Parari</Link>
+      <Link href="/new">投稿する</Link>
     </header>
   );
 }
