@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { publicUrl } from "@/lib/r2";
+import { signOut } from "@/lib/actions";
 import { EpisodeControls } from "./EpisodeControls";
 
 export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
@@ -38,39 +39,70 @@ export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">
-      <h1 className="font-mono text-xl font-semibold tracking-tight">
-        {profile.handle}
-      </h1>
+      <div className="flex items-baseline justify-between gap-4">
+        <h1 className="font-mono text-xl font-semibold tracking-tight">
+          {profile.handle}
+        </h1>
+        {isOwner ? (
+          // The author lands here after posting, so this is where the way to
+          // post again belongs.
+          <div className="flex shrink-0 items-center gap-3 text-sm">
+            <Link
+              href="/new"
+              className="rounded-full bg-black px-4 py-2 text-xs font-medium text-white transition hover:opacity-80 dark:bg-white dark:text-black"
+            >
+              置く
+            </Link>
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="text-xs text-black/50 underline-offset-4 hover:underline dark:text-white/50"
+              >
+                ログアウト
+              </button>
+            </form>
+          </div>
+        ) : null}
+      </div>
 
       {episodes?.length ? (
         <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {episodes.map((episode) => {
             const cover = episode.pages[0];
-            const dimmed = isOwner && episode.status !== "published";
+            const unfinished = episode.status === "processing";
+            const frame = `block overflow-hidden rounded-lg border border-black/10 dark:border-white/15 ${
+              isOwner && episode.status !== "published" ? "opacity-40" : ""
+            }`;
+            const tile = cover ? (
+              // Sizes vary per page, so a plain <img> beats next/image here:
+              // the file is already resized and on a CDN.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={publicUrl(cover.object_key)}
+                alt=""
+                width={cover.width}
+                height={cover.height}
+                loading="lazy"
+                className="h-auto w-full"
+              />
+            ) : (
+              <div className="aspect-[3/4] w-full bg-black/5 dark:bg-white/10" />
+            );
+
             return (
               <li key={episode.id}>
-                <Link
-                  href={`/${handle}/${episode.id}`}
-                  className={`block overflow-hidden rounded-lg border border-black/10 transition hover:opacity-80 dark:border-white/15 ${
-                    dimmed ? "opacity-40" : ""
-                  }`}
-                >
-                  {cover ? (
-                    // Sizes vary per page, so a plain <img> beats next/image
-                    // here: the file is already resized and on a CDN.
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={publicUrl(cover.object_key)}
-                      alt=""
-                      width={cover.width}
-                      height={cover.height}
-                      loading="lazy"
-                      className="h-auto w-full"
-                    />
-                  ) : (
-                    <div className="aspect-[3/4] w-full bg-black/5 dark:bg-white/10" />
-                  )}
-                </Link>
+                {/* An unfinished episode has no pages, so its page would 404.
+                    Leave it as a dead tile the author can only delete. */}
+                {unfinished ? (
+                  <div className={frame}>{tile}</div>
+                ) : (
+                  <Link
+                    href={`/${handle}/${episode.id}`}
+                    className={`${frame} transition hover:opacity-80`}
+                  >
+                    {tile}
+                  </Link>
+                )}
                 <p className="mt-1.5 text-xs text-black/50 dark:text-white/50">
                   {new Date(episode.created_at).toLocaleDateString("ja-JP")} ·{" "}
                   {episode.page_count}ページ

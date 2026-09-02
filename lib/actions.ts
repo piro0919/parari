@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import {
   deleteEpisodeObjects,
@@ -59,6 +60,14 @@ export async function claimHandle(_prev: unknown, formData: FormData) {
 
   revalidatePath("/new");
   return { error: null };
+}
+
+// Posted as a plain form action, so it has to end somewhere: the top page is
+// the only one that reads the same signed in or out.
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/");
 }
 
 export type PageUpload = {
