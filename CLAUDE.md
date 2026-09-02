@@ -21,6 +21,15 @@ npm run dev         # http://localhost:3001
 set -a && . ./.env.local && set +a && supabase start
 ```
 
+行レベルセキュリティは pgTAP で確かめる。`supabase start` が動いていることが要る。
+
+```sh
+npm run test:db
+```
+
+**このテストは動いているローカルDBの中で走る。** 開発用に置いた話が同じ表にいるので、
+数えるときは仕込んだ行に絞る。全件の `count(*)` を期待値にすると落ちる。
+
 ## 決めたこと
 
 - **作者ごとの置き場が先。** サービス側の一覧と回遊は後
