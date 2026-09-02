@@ -7,6 +7,7 @@ import { signOut } from "@/lib/actions";
 import { EpisodeCover } from "@/app/EpisodeCover";
 import { SiteFooter } from "@/app/SiteFooter";
 import { SiteHeader } from "@/app/SiteHeader";
+import { Composer } from "./Composer";
 import { EpisodeControls } from "./EpisodeControls";
 import { WorkList } from "./WorkList";
 import { XLink } from "./XLink";
@@ -87,15 +88,8 @@ export default async function AuthorPage({
             <XLink xHandle={profile.x_handle} isOwner={isOwner} />
           </div>
           {isOwner ? (
-            // The author lands here after posting, so this is where the way to
-            // post again belongs.
+            // 投稿口はすぐ下にあるので、ここには置かない
             <div className="flex shrink-0 items-center gap-4">
-              <Link
-                href="/new"
-                className="border border-line px-5 py-2 font-label text-sm tracking-[0.1em] uppercase transition hover:bg-ink hover:text-surface"
-              >
-                投稿
-              </Link>
               <form action={signOut}>
                 <button
                   type="submit"
@@ -110,6 +104,8 @@ export default async function AuthorPage({
       </section>
 
       <div className="px-6 py-14 sm:px-10">
+        {/* The author's shelf doubles as where they post: one place, one URL. */}
+        {isOwner ? <Composer /> : null}
         {isOwner ? <WorkList handle={handle} works={works ?? []} /> : null}
 
         {episodes?.length ? (
