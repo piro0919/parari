@@ -13,7 +13,7 @@ export default async function Home() {
   const { data: episodes } = await createAnonClient()
     .from("episodes")
     .select(
-      "id, created_at, page_count, profiles!inner(handle), pages(object_key, width, height)",
+      "id, created_at, page_count, work_id, works(title), profiles!inner(handle), pages(object_key, width, height)",
     )
     .eq("status", "published")
     .eq("pages.page_index", 0)
@@ -48,6 +48,7 @@ export default async function Home() {
               // A many-to-one embed comes back as a single row, but without
               // generated database types the client still types it as an array.
               const author = [episode.profiles].flat()[0];
+              const work = episode.work_id ? [episode.works].flat()[0] : null;
               return (
                 <li key={episode.id}>
                   <Link
@@ -64,6 +65,14 @@ export default async function Home() {
                   >
                     {author.handle}
                   </Link>
+                  {work ? (
+                    <Link
+                      href={`/${author.handle}/works/${episode.work_id}`}
+                      className="block text-xs text-black/70 underline-offset-4 hover:underline dark:text-white/70"
+                    >
+                      {work.title}
+                    </Link>
+                  ) : null}
                   <p className="text-xs text-black/40 dark:text-white/40">
                     {formatDate(episode.created_at)} ·{" "}
                     {episode.page_count}ページ
