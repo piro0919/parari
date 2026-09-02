@@ -18,8 +18,14 @@ export async function generateMetadata({
   };
 }
 
-export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
+const PER_PAGE = 48;
+
+export default async function AuthorPage({
+  params,
+  searchParams,
+}: PageProps<"/[handle]">) {
   const { handle } = await params;
+  const page = Math.max(1, Number((await searchParams).page) || 1);
   const supabase = await createClient();
 
   const { data: profile } = await supabase
@@ -37,18 +43,25 @@ export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
 
   // Only the first page of each episode: the cover is how a reader tells
   // episodes apart, since nothing is titled.
+  // Bounded on purpose: a shelf that has been filling up for years should not
+  // hand back every row and every cover in one response.
   let query = supabase
     .from("episodes")
-    .select("id, created_at, page_count, status, pages(object_key, width, height)")
+    .select(
+      "id, created_at, page_count, status, pages(object_key, width, height)",
+      { count: "exact" },
+    )
     .eq("author_id", profile.id)
     .eq("pages.page_index", 0)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range((page - 1) * PER_PAGE, page * PER_PAGE - 1);
 
   // The author sees the whole shelf — what is down and what never finished
   // uploading — because this page is also where they clean it up.
   if (!isOwner) query = query.eq("status", "published");
 
-  const { data: episodes } = await query;
+  const { data: episodes, count } = await query;
+  const hasNext = (count ?? 0) > page * PER_PAGE;
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">
@@ -128,9 +141,34 @@ export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
         </ul>
       ) : (
         <p className="mt-8 text-sm text-black/50 dark:text-white/50">
-          まだ何もありません。
+          {page === 1 ? "まだ何もありません。" : "このページには何もありません。"}
         </p>
       )}
+
+      {page > 1 || hasNext ? (
+        <nav className="mt-10 flex items-center justify-between text-sm">
+          {page > 1 ? (
+            <Link
+              href={page === 2 ? `/${handle}` : `/${handle}?page=${page - 1}`}
+              className="text-black/60 underline-offset-4 hover:underline dark:text-white/60"
+            >
+              ← 新しい方へ
+            </Link>
+          ) : (
+            <span />
+          )}
+          {hasNext ? (
+            <Link
+              href={`/${handle}?page=${page + 1}`}
+              className="text-black/60 underline-offset-4 hover:underline dark:text-white/60"
+            >
+              古い方へ →
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      ) : null}
     </main>
   );
 }
