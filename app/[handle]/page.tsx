@@ -1,9 +1,20 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { publicUrl } from "@/lib/r2";
 import { signOut } from "@/lib/actions";
 import { EpisodeControls } from "./EpisodeControls";
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[handle]">): Promise<Metadata> {
+  const { handle } = await params;
+  return {
+    title: handle,
+    description: `${handle} が置いている漫画。ログインなしで読めます。`,
+  };
+}
 
 export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
   const { handle } = await params;

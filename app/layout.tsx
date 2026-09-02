@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Parari",
+  metadataBase: SITE_URL,
+  title: { default: "Parari", template: "%s · Parari" },
   description: "漫画を置いておく場所。読むのにログインは要りません。",
+  openGraph: { siteName: "Parari", type: "website", locale: "ja_JP" },
+  // Manga arrives from a tweet, so the card is the first thing a reader sees.
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

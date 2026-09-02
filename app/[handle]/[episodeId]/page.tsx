@@ -1,8 +1,31 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { createAnonClient } from "@/lib/supabase/anon";
 import { createClient } from "@/lib/supabase/server";
 import { publicUrl } from "@/lib/r2";
 import { Viewer } from "./Viewer";
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[handle]/[episodeId]">): Promise<Metadata> {
+  const { handle, episodeId } = await params;
+
+  // No cookies here: a link preview is the same for everyone, and reading them
+  // would take this response out of the cache.
+  const { data: episode } = await createAnonClient()
+    .from("episodes")
+    .select("page_count")
+    .eq("id", episodeId)
+    .maybeSingle();
+
+  return {
+    title: handle,
+    description: episode
+      ? `${handle} の漫画 ${episode.page_count}ページ。ログインなしで読めます。`
+      : `${handle} の漫画。ログインなしで読めます。`,
+  };
+}
 
 export default async function EpisodePage({
   params,
