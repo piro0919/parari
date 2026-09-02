@@ -1,26 +1,30 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Miranda（styles.refero.design）から色・間隔・角丸・影だけを借りている。
+   書体は借りていない。あちらの4書体はどれも日本語を持たず、見出しが黙って
+   フォールバックするため、日本語の入る明朝に読み替えてある。 */
+@theme {
+  --color-parchment: #e2dedb;
+  --color-bone-cream: #cdc6be;
+  --color-ink-black: #1d1d1b;
+  --color-charcoal: #69645f;
+  --color-ember: #c03f13;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* 本文も見出しも明朝一本。劇的さは書体の切り替えではなく、大きさと詰めで出す */
+  --font-mincho: var(--font-shippori-mincho), "Hiragino Mincho ProN",
+    "Yu Mincho", serif;
+  /* 欧文だけの語（Parari、作者ID）に当てる見出し用 */
+  --font-display: var(--font-playfair), Georgia, serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --radius-tag: 2.88px;
+  --radius-card: 11.52px;
+
+  /* 紙に落ちる影。左上から差す方向まで含めて Miranda の指定どおり */
+  --shadow-ink: rgba(29, 29, 27, 0.2) -4px 4px 6px 0px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-parchment);
+  color: var(--color-ink-black);
+  font-family: var(--font-mincho);
 }
