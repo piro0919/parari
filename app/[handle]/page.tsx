@@ -6,6 +6,7 @@ import { formatDate } from "@/lib/date";
 import { signOut } from "@/lib/actions";
 import { EpisodeCover } from "@/app/EpisodeCover";
 import { EpisodeControls } from "./EpisodeControls";
+import { WorkList } from "./WorkList";
 import { XLink } from "./XLink";
 
 export async function generateMetadata({
@@ -108,6 +109,8 @@ export default async function AuthorPage({
           </div>
         ) : null}
       </div>
+
+      {isOwner ? <WorkList handle={handle} works={works ?? []} /> : null}
 
       {episodes?.length ? (
         <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">

@@ -115,6 +115,48 @@ export async function createWork(title: string) {
   return { workId: data.id as string };
 }
 
+export async function renameWork(workId: string, title: string) {
+  const { supabase, user } = await requireUser();
+  const trimmed = title.trim();
+
+  if (!trimmed || trimmed.length > 60) {
+    throw new Error("作品名は1〜60文字で決めてください");
+  }
+
+  const { data, error } = await supabase
+    .from("works")
+    .update({ title: trimmed })
+    .eq("id", workId)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) throw new Error("変えられませんでした");
+
+  const handle = await ownHandle(supabase, user.id);
+  if (handle) {
+    revalidatePath(`/${handle}`);
+    revalidatePath(`/${handle}/works/${workId}`);
+  }
+}
+
+// Only the label goes. The foreign key drops `work_id` back to null and the
+// episodes stay where they are, readable on their own.
+export async function deleteWork(workId: string) {
+  const { supabase, user } = await requireUser();
+
+  const { data, error } = await supabase
+    .from("works")
+    .delete()
+    .eq("id", workId)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) throw new Error("消せませんでした");
+
+  const handle = await ownHandle(supabase, user.id);
+  if (handle) revalidatePath(`/${handle}`);
+}
+
 // `null` takes the episode back out of its work. Row-level security keeps both
 // the episode and the work inside the caller's own shelf.
 export async function setEpisodeWork(episodeId: string, workId: string | null) {
