@@ -25,15 +25,12 @@ export default async function Home() {
       {/* A contact sheet, not a landing page: a rule across the top, the name
           set light and large, and nothing else competing with the covers. */}
       <section className="border-b-2 border-line px-6 py-20 sm:px-10">
-        <p className="font-label text-xs tracking-[0.1em] uppercase">
-          Manga on the web
-        </p>
-        <h1 className="mt-4 text-[clamp(2.5rem,6vw,2.7rem)] leading-tight font-light tracking-[-0.02em] text-ink-strong">
+        <h1 className=" text-[clamp(2.5rem,6vw,2.7rem)] leading-tight font-light tracking-[-0.02em] text-ink-strong">
           Parari
         </h1>
         <p className="mt-4 max-w-md text-base leading-relaxed">
-          描いた漫画を置いておく場所です。画像を落とすだけで読める形になります。
-          読む側にログインは要りません。
+          {/* 日本語は JSX の改行が空白になるので、一文を折り返さずに置く */}
+          漫画を公開できるサービスです。画像をアップロードするだけで読める形に変換されます。閲覧にログインは必要ありません。
         </p>
         {/* No accent colour exists in this system, so the one action is a
             bordered rectangle like everything else. */}
@@ -41,14 +38,14 @@ export default async function Home() {
           href="/new"
           className="mt-8 inline-block border border-line px-6 py-2.5 font-label text-sm tracking-[0.1em] uppercase transition hover:bg-ink hover:text-surface"
         >
-          置いてみる
+          投稿する
         </Link>
       </section>
 
       {episodes?.length ? (
         <section className="px-6 py-16 sm:px-10">
           <h2 className="font-label text-xs tracking-[0.1em] text-ink-muted uppercase">
-            New
+            新着
           </h2>
           {/* Cells of a grid, divided by rules rather than boxed as cards. */}
           {/* Rules are drawn by the cells themselves, so an incomplete row

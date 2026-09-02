@@ -15,7 +15,7 @@ export async function generateMetadata({
   const { handle } = await params;
   return {
     title: handle,
-    description: `${handle} が置いている漫画。ログインなしで読めます。`,
+    description: `${handle} が公開している漫画の一覧。ログイン不要で閲覧できます。`,
   };
 }
 
@@ -97,7 +97,7 @@ export default async function AuthorPage({
                 href="/new"
                 className="border border-line px-5 py-2 font-label text-sm tracking-[0.1em] uppercase transition hover:bg-ink hover:text-surface"
               >
-                置く
+                投稿
               </Link>
               <form action={signOut}>
                 <button
@@ -155,7 +155,7 @@ export default async function AuthorPage({
                   <p className="mt-1 text-sm text-ink-muted">
                     {formatDate(episode.created_at)} · {episode.page_count}
                     ページ
-                    {episode.status === "hidden" ? " · 下書き" : ""}
+                    {episode.status === "hidden" ? " · 非公開" : ""}
                   </p>
                   {isOwner ? (
                     <EpisodeControls
@@ -171,7 +171,7 @@ export default async function AuthorPage({
           </ul>
         ) : (
           <p className="text-sm text-ink-muted">
-            {page === 1 ? "まだ何もありません。" : "このページには何もありません。"}
+            {page === 1 ? "投稿はまだありません。" : "このページに表示する投稿はありません。"}
           </p>
         )}
 
@@ -182,7 +182,7 @@ export default async function AuthorPage({
                 href={page === 2 ? `/${handle}` : `/${handle}?page=${page - 1}`}
                 className="underline-offset-4 hover:underline"
               >
-                ← Newer
+                前のページ
               </Link>
             ) : (
               <span />
@@ -192,7 +192,7 @@ export default async function AuthorPage({
                 href={`/${handle}?page=${page + 1}`}
                 className="underline-offset-4 hover:underline"
               >
-                Older →
+                次のページ
               </Link>
             ) : (
               <span />

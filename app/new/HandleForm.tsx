@@ -11,11 +11,11 @@ export function HandleForm() {
   return (
     <form action={action} className="flex w-full max-w-sm flex-col gap-3">
       <label htmlFor="handle" className="text-sm font-medium">
-        あなたの ID を決めてください
+        ユーザー ID を入力してください
       </label>
       <p className="text-xs text-ink-muted">
-        parari.kkweb.io/<span className="font-mono">あなたのID</span>{" "}
-        があなたの置き場になります。あとから変えられません。
+        parari.kkweb.io/<span className="font-mono">ユーザーID</span>
+        があなたのページの URL になります。登録後は変更できません。
       </p>
       <input
         id="handle"
@@ -35,7 +35,7 @@ export function HandleForm() {
         disabled={pending}
         className="bg-ink px-6 py-2.5 text-sm text-surface transition hover:opacity-80 disabled:opacity-50"
       >
-        {pending ? "登録中…" : "決定"}
+        {pending ? "登録中…" : "登録"}
       </button>
     </form>
   );

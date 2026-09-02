@@ -45,13 +45,13 @@ export function WorkList({ handle, works }: { handle: string; works: Work[] }) {
               type="button"
               disabled={pending}
               onClick={() => {
-                const title = window.prompt("作品名", work.title);
+                const title = window.prompt("作品名を入力してください", work.title);
                 if (!title?.trim() || title === work.title) return;
                 run(() => renameWork(work.id, title));
               }}
               className="text-xs text-ink-muted underline-offset-4 hover:underline disabled:opacity-40"
             >
-              名前を変える
+              名前を変更
             </button>
             <button
               type="button"
@@ -59,7 +59,7 @@ export function WorkList({ handle, works }: { handle: string; works: Work[] }) {
               onClick={() => {
                 if (
                   !confirm(
-                    `「${work.title}」の名前を外します。話はそのまま残ります。`,
+                    `作品「${work.title}」を削除します。話は削除されません。`,
                   )
                 ) {
                   return;

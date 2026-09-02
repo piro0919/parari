@@ -25,7 +25,7 @@ export function LoginButton({ next }: { next: string }) {
       disabled={pending}
       className="border border-line px-6 py-3 font-label text-sm tracking-[0.1em] uppercase transition hover:bg-ink hover:text-surface disabled:opacity-50"
     >
-      {pending ? "Google に移動しています…" : "Google ではじめる"}
+      {pending ? "リダイレクトしています…" : "Google でログイン"}
     </button>
   );
 }

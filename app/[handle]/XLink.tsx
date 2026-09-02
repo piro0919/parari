@@ -46,7 +46,7 @@ export function XLink({
             onClick={() => setEditing(true)}
             className="text-ink-muted underline-offset-4 hover:underline"
           >
-            {xHandle ? "変える" : "X を並べる"}
+            {xHandle ? "変更" : "X アカウントを追加"}
           </button>
         ) : null}
       </div>

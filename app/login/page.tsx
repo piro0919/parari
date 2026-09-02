@@ -20,7 +20,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           Parari
         </h1>
         <p className="mt-2 text-sm text-ink-muted">
-          描いた人だけログインします。読む人は要りません。
+          漫画を投稿するにはログインが必要です。閲覧のみの場合は不要です。
         </p>
       </div>
       <LoginButton next={next} />

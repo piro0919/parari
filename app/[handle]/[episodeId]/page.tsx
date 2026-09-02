@@ -22,8 +22,8 @@ export async function generateMetadata({
   return {
     title: handle,
     description: episode
-      ? `${handle} の漫画 ${episode.page_count}ページ。ログインなしで読めます。`
-      : `${handle} の漫画。ログインなしで読めます。`,
+      ? `${handle} が公開している漫画（全${episode.page_count}ページ）。ログイン不要で閲覧できます。`
+      : `${handle} が公開している漫画。ログイン不要で閲覧できます。`,
   };
 }
 

@@ -47,7 +47,7 @@ export function EpisodeControls({
 
   function assign(value: string) {
     if (value === NEW_WORK) {
-      const title = window.prompt("作品名");
+      const title = window.prompt("作品名を入力してください");
       if (!title?.trim()) return;
       run(async () => {
         const { workId: created } = await createWork(title);
@@ -68,19 +68,19 @@ export function EpisodeControls({
         onChange={(event) => assign(event.target.value)}
         className="max-w-full border border-line px-2 py-1 text-xs disabled:opacity-40"
       >
-        <option value="">作品なし</option>
+        <option value="">作品を選択しない</option>
         {works.map((work) => (
           <option key={work.id} value={work.id}>
             {work.title}
           </option>
         ))}
-        <option value={NEW_WORK}>＋ 新しい作品…</option>
+        <option value={NEW_WORK}>新しい作品を作成</option>
       </select>
       {status === "processing" ? (
         // Nothing to show or hide: the upload never finished, so the only
         // useful action is getting rid of it.
         <span className="text-xs text-ink-muted">
-          未完成
+          アップロード未完了
         </span>
       ) : (
         <button
@@ -91,14 +91,14 @@ export function EpisodeControls({
           }
           className={BUTTON}
         >
-          {status === "published" ? "下げる" : "出す"}
+          {status === "published" ? "非公開にする" : "公開する"}
         </button>
       )}
       <button
         type="button"
         disabled={pending}
         onClick={() => {
-          if (!confirm("この話を消します。元に戻せません。")) return;
+          if (!confirm("この話を削除します。元に戻せません。")) return;
           run(() => deleteEpisode(episodeId));
         }}
         className={`${BUTTON} text-danger`}

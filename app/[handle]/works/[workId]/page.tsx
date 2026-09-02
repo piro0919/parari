@@ -43,7 +43,7 @@ export async function generateMetadata({
   return {
     title: loaded ? `${loaded.work.title} · ${handle}` : handle,
     description: loaded
-      ? `${handle} の「${loaded.work.title}」。ログインなしで読めます。`
+      ? `${handle} が公開している「${loaded.work.title}」。ログイン不要で閲覧できます。`
       : undefined,
   };
 }
@@ -84,9 +84,7 @@ export default async function WorkPage({
                 >
                   <EpisodeCover cover={episode.pages[0] ?? null} />
                 </Link>
-                <p className="mt-3 font-label text-sm tracking-[0.06em] uppercase">
-                  Ep. {index + 1}
-                </p>
+                <p className="mt-3 text-sm">第{index + 1}話</p>
                 <p className="mt-1 text-sm text-ink-muted">
                   {formatDate(episode.created_at)} · {episode.page_count}
                   ページ
@@ -95,7 +93,7 @@ export default async function WorkPage({
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-ink-muted">まだ何もありません。</p>
+          <p className="text-sm text-ink-muted">公開中の話はありません。</p>
         )}
       </div>
     </main>

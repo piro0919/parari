@@ -26,7 +26,7 @@ async function toWebp(file: File): Promise<Converted> {
 
   const canvas = new OffscreenCanvas(width, height);
   const context = canvas.getContext("2d");
-  if (!context) throw new Error("画像を変換できませんでした");
+  if (!context) throw new Error("画像を変換できませんでした。別の画像でお試しください");
   context.drawImage(bitmap, 0, 0, width, height);
   bitmap.close();
 
@@ -44,7 +44,7 @@ async function put(url: string, blob: Blob, contentType: string) {
     // Both headers are part of the signature, so they have to match exactly.
     headers: { "cache-control": CACHE_CONTROL, "content-type": contentType },
   });
-  if (!response.ok) throw new Error("アップロードに失敗しました");
+  if (!response.ok) throw new Error("アップロードに失敗しました。もう一度お試しください");
 }
 
 export function Uploader({ handle }: { handle: string }) {
@@ -60,7 +60,7 @@ export function Uploader({ handle }: { handle: string }) {
     const files = orderPages(Array.from(fileList));
 
     if (!files.length) {
-      setError("画像が見つかりませんでした");
+      setError("画像ファイルが選択されていません");
       return;
     }
 
@@ -71,11 +71,11 @@ export function Uploader({ handle }: { handle: string }) {
     let created: string | null = null;
 
     try {
-      setProgress(`変換中 0 / ${files.length}`);
+      setProgress(`変換中 0/${files.length}`);
       const converted: Converted[] = [];
       for (const [index, file] of files.entries()) {
         converted.push(await toWebp(file));
-        setProgress(`変換中 ${index + 1} / ${files.length}`);
+        setProgress(`変換中 ${index + 1}/${files.length}`);
       }
 
       const { episodeId, slots } = await createEpisode(
@@ -89,7 +89,7 @@ export function Uploader({ handle }: { handle: string }) {
       created = episodeId;
 
       let done = 0;
-      setProgress(`送信中 0 / ${files.length}`);
+      setProgress(`アップロード中 0/${files.length}`);
       const uploaded: UploadedPage[] = await Promise.all(
         slots.map(async (slot) => {
           const page = converted[slot.pageIndex];
@@ -99,7 +99,7 @@ export function Uploader({ handle }: { handle: string }) {
             put(slot.originalUrl, file, file.type),
           ]);
           done += 1;
-          setProgress(`送信中 ${done} / ${files.length}`);
+          setProgress(`アップロード中 ${done}/${files.length}`);
           return {
             pageIndex: slot.pageIndex,
             deliveryKey: slot.deliveryKey,
@@ -110,7 +110,7 @@ export function Uploader({ handle }: { handle: string }) {
         }),
       );
 
-      setProgress("公開しています…");
+      setProgress("公開処理中…");
       await publishEpisode(episodeId, uploaded);
       router.push(`/${handle}/${episodeId}`);
     } catch (cause) {
@@ -151,11 +151,11 @@ export function Uploader({ handle }: { handle: string }) {
           onChange={(event) => void upload(event.target.files)}
         />
         <span className="text-sm font-medium">
-          {progress ?? "画像をここに落とす"}
+          {progress ?? "画像をドラッグ&ドロップ"}
         </span>
         {!progress ? (
           <span className="text-xs text-ink-muted">
-            ファイル名の順に並びます。タイトルは要りません
+            クリックして選択することもできます。ページの順序はファイル名順です
           </span>
         ) : null}
       </label>

@@ -27,7 +27,7 @@ export default async function NewEpisodePage() {
             href={`/${profile.handle}`}
             className="text-xs text-ink-muted underline-offset-4 hover:underline"
           >
-            置いたものを見る
+            自分のページを表示
           </Link>
         </>
       ) : (
