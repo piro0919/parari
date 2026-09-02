@@ -9,12 +9,12 @@ export function HandleForm() {
   });
 
   return (
-    <form action={action} className="flex w-full max-w-sm flex-col gap-3">
-      <label htmlFor="handle" className="text-sm font-medium">
+    <form action={action}>
+      <label htmlFor="handle">
         ユーザー ID を入力してください
       </label>
-      <p className="text-xs text-ink-muted">
-        parari.kkweb.io/<span className="font-mono">ユーザーID</span>
+      <p>
+        parari.kkweb.io/<span>ユーザーID</span>
         があなたのページの URL になります。登録後は変更できません。
       </p>
       <input
@@ -25,15 +25,13 @@ export function HandleForm() {
         autoComplete="off"
         spellCheck={false}
         pattern="[a-z0-9_]{2,20}"
-        className="border border-line px-3 py-2 font-mono text-sm"
       />
       {state?.error ? (
-        <p className="text-xs text-danger">{state.error}</p>
+        <p>{state.error}</p>
       ) : null}
       <button
         type="submit"
         disabled={pending}
-        className="bg-ink px-6 py-2.5 text-sm text-surface transition hover:opacity-80 disabled:opacity-50"
       >
         {pending ? "登録中…" : "登録"}
       </button>

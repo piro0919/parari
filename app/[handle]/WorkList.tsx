@@ -28,16 +28,15 @@ export function WorkList({ handle, works }: { handle: string; works: Work[] }) {
   if (!works.length) return null;
 
   return (
-    <section className="mt-8">
-      <h2 className="text-xs font-medium tracking-wide text-ink-muted">
+    <section>
+      <h2>
         作品
       </h2>
-      <ul className="mt-2 flex flex-col gap-1.5">
+      <ul>
         {works.map((work) => (
-          <li key={work.id} className="flex flex-wrap items-center gap-3">
+          <li key={work.id}>
             <Link
               href={`/${handle}/works/${work.id}`}
-              className="text-sm underline-offset-4 hover:underline"
             >
               {work.title}
             </Link>
@@ -49,7 +48,6 @@ export function WorkList({ handle, works }: { handle: string; works: Work[] }) {
                 if (!title?.trim() || title === work.title) return;
                 run(() => renameWork(work.id, title));
               }}
-              className="text-xs text-ink-muted underline-offset-4 hover:underline disabled:opacity-40"
             >
               名前を変更
             </button>
@@ -66,7 +64,6 @@ export function WorkList({ handle, works }: { handle: string; works: Work[] }) {
                 }
                 run(() => deleteWork(work.id));
               }}
-              className="text-xs text-danger underline-offset-4 hover:underline disabled:opacity-40"
             >
               削除
             </button>
@@ -74,7 +71,7 @@ export function WorkList({ handle, works }: { handle: string; works: Work[] }) {
         ))}
       </ul>
       {error ? (
-        <p className="mt-2 text-xs text-danger">{error}</p>
+        <p>{error}</p>
       ) : null}
     </section>
   );

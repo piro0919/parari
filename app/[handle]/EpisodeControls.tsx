@@ -20,8 +20,6 @@ type Props = {
 
 const NEW_WORK = "__new";
 
-const BUTTON =
-  " border border-line px-2.5 py-1 text-xs transition hover:bg-ink/5 disabled:opacity-40  ";
 
 export function EpisodeControls({
   episodeId,
@@ -59,14 +57,13 @@ export function EpisodeControls({
   }
 
   return (
-    <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+    <div>
       {/* Grouping is a label put on afterwards, so it lives with the other
           things an author changes about an episode they already posted. */}
       <select
         value={workId ?? ""}
         disabled={pending}
         onChange={(event) => assign(event.target.value)}
-        className="max-w-full border border-line px-2 py-1 text-xs disabled:opacity-40"
       >
         <option value="">作品を選択しない</option>
         {works.map((work) => (
@@ -79,7 +76,7 @@ export function EpisodeControls({
       {status === "processing" ? (
         // Nothing to show or hide: the upload never finished, so the only
         // useful action is getting rid of it.
-        <span className="text-xs text-ink-muted">
+        <span>
           アップロード未完了
         </span>
       ) : (
@@ -89,7 +86,6 @@ export function EpisodeControls({
           onClick={() =>
             run(() => setEpisodeHidden(episodeId, status === "published"))
           }
-          className={BUTTON}
         >
           {status === "published" ? "非公開にする" : "公開する"}
         </button>
@@ -101,12 +97,11 @@ export function EpisodeControls({
           if (!confirm("この話を削除します。元に戻せません。")) return;
           run(() => deleteEpisode(episodeId));
         }}
-        className={`${BUTTON} text-danger`}
       >
         削除
       </button>
       {error ? (
-        <span className="text-xs text-danger">{error}</span>
+        <span>{error}</span>
       ) : null}
     </div>
   );

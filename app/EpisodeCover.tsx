@@ -11,7 +11,7 @@ export type Cover = {
 // frame.
 export function EpisodeCover({ cover }: { cover: Cover }) {
   if (!cover) {
-    return <div className="aspect-[3/4] w-full bg-ink/5" />;
+    return <div />;
   }
 
   return (
@@ -24,7 +24,6 @@ export function EpisodeCover({ cover }: { cover: Cover }) {
       width={cover.width}
       height={cover.height}
       loading="lazy"
-      className="h-auto w-full"
     />
   );
 }

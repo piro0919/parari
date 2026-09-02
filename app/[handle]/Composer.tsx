@@ -62,13 +62,13 @@ export function Composer() {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border border-line px-4 py-3">
-        <span className="text-sm">
+      <div>
+        <span>
           {progress ?? "画像をドラッグ&ドロップ"}
         </span>
         {!progress ? (
           <>
-            <label className="cursor-pointer border border-line px-3 py-1 text-sm transition hover:bg-ink hover:text-surface">
+            <label>
               ファイルを選択
               <input
                 type="file"
@@ -78,19 +78,19 @@ export function Composer() {
                 onChange={(event) => void upload(event.target.files)}
               />
             </label>
-            <span className="text-sm text-ink-muted">
+            <span>
               ページの順序はファイル名順です
             </span>
           </>
         ) : null}
-        {error ? <span className="text-sm text-danger">{error}</span> : null}
+        {error ? <span>{error}</span> : null}
       </div>
 
       {/* Shown only while files are over the window, so the drop target is
           visible exactly when it matters. */}
       {dragging && !progress ? (
-        <div className="pointer-events-none fixed inset-3 z-50 flex items-center justify-center border-2 border-ink bg-surface/80">
-          <span className="text-sm">ここに落とす</span>
+        <div>
+          <span>ここに落とす</span>
         </div>
       ) : null}
     </>

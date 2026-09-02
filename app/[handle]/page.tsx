@@ -77,23 +77,22 @@ export default async function AuthorPage({
     : { data: null };
 
   return (
-    <main className="flex flex-1 flex-col">
+    <main>
       <SiteHeader />
-      <section className="border-b-2 border-line px-6 py-14 sm:px-10">
-        <div className="flex flex-wrap items-end justify-between gap-6">
+      <section>
+        <div>
           <div>
-            <h1 className=" text-[clamp(2rem,5vw,2.5rem)] leading-tight font-light tracking-[-0.02em] text-ink-strong">
+            <h1>
               {profile.handle}
             </h1>
             <XLink xHandle={profile.x_handle} isOwner={isOwner} />
           </div>
           {isOwner ? (
             // 投稿口はすぐ下にあるので、ここには置かない
-            <div className="flex shrink-0 items-center gap-4">
+            <div>
               <form action={signOut}>
                 <button
                   type="submit"
-                  className="text-xs text-ink-muted underline-offset-4 hover:underline"
                 >
                   ログアウト
                 </button>
@@ -103,7 +102,7 @@ export default async function AuthorPage({
         </div>
       </section>
 
-      <div className="px-6 py-14 sm:px-10">
+      <div>
         {/* The author's shelf doubles as where they post: one place, one URL. */}
         {isOwner ? <Composer /> : null}
         {isOwner ? <WorkList handle={handle} works={works ?? []} /> : null}
@@ -111,7 +110,7 @@ export default async function AuthorPage({
         {episodes?.length ? (
           // Rules are drawn by the cells themselves, so an incomplete row ends
           // where the cells end instead of trailing off.
-          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+          <ul>
             {episodes.map((episode) => {
               const cover = episode.pages[0];
               const unfinished = episode.status === "processing";
@@ -119,33 +118,28 @@ export default async function AuthorPage({
               // A many-to-one embed comes back as a single row, but without
               // generated database types the client still types it as an array.
               const work = episode.work_id ? [episode.works].flat()[0] : null;
-              const frame = `block transition hover:opacity-80 ${
-                isOwner && episode.status !== "published" ? "opacity-40" : ""
-              }`;
 
               return (
                 <li
                   key={episode.id}
-                  className="border-t border-l border-line p-4 [&:nth-child(2n)]:border-r sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-child(3n)]:border-r md:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(4n)]:border-r"
                 >
                   {/* An unfinished episode has no pages, so its page would 404.
                       Leave it as a dead tile the author can only delete. */}
                   {unfinished ? (
-                    <div className={frame}>{tile}</div>
+                    <div>{tile}</div>
                   ) : (
-                    <Link href={`/${handle}/${episode.id}`} className={frame}>
+                    <Link href={`/${handle}/${episode.id}`}>
                       {tile}
                     </Link>
                   )}
                   {work ? (
                     <Link
                       href={`/${handle}/works/${episode.work_id}`}
-                      className="mt-3 block text-base leading-tight underline-offset-4 hover:underline"
                     >
                       {work.title}
                     </Link>
                   ) : null}
-                  <p className="mt-1 text-sm text-ink-muted">
+                  <p>
                     {formatDate(episode.created_at)} · {episode.page_count}
                     ページ
                     {episode.status === "hidden" ? " · 非公開" : ""}
@@ -163,17 +157,16 @@ export default async function AuthorPage({
             })}
           </ul>
         ) : (
-          <p className="text-sm text-ink-muted">
+          <p>
             {page === 1 ? "投稿はまだありません。" : "このページに表示する投稿はありません。"}
           </p>
         )}
 
         {page > 1 || hasNext ? (
-          <nav className="mt-10 flex items-center justify-between font-label text-sm tracking-[0.1em] uppercase">
+          <nav>
             {page > 1 ? (
               <Link
                 href={page === 2 ? `/${handle}` : `/${handle}?page=${page - 1}`}
-                className="underline-offset-4 hover:underline"
               >
                 前のページ
               </Link>
@@ -183,7 +176,6 @@ export default async function AuthorPage({
             {hasNext ? (
               <Link
                 href={`/${handle}?page=${page + 1}`}
-                className="underline-offset-4 hover:underline"
               >
                 次のページ
               </Link>

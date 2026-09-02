@@ -59,36 +59,33 @@ export default async function WorkPage({
   if (!loaded) notFound();
 
   return (
-    <main className="flex flex-1 flex-col">
+    <main>
       <SiteHeader />
-      <section className="border-b-2 border-line px-6 py-14 sm:px-10">
+      <section>
         <Link
           href={`/${handle}`}
-          className="font-label text-xs tracking-[0.1em] text-ink-muted uppercase underline-offset-4 hover:underline"
         >
           ← {handle}
         </Link>
-        <h1 className="mt-3 text-[clamp(2rem,5vw,2.5rem)] leading-tight font-light tracking-[-0.02em] text-ink-strong">
+        <h1>
           {loaded.work.title}
         </h1>
       </section>
 
-      <div className="px-6 py-14 sm:px-10">
+      <div>
         {loaded.episodes.length ? (
-          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+          <ul>
             {loaded.episodes.map((episode, index) => (
               <li
                 key={episode.id}
-                className="border-t border-l border-line p-4 [&:nth-child(2n)]:border-r sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-child(3n)]:border-r md:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(4n)]:border-r"
               >
                 <Link
                   href={`/${handle}/${episode.id}`}
-                  className="block transition hover:opacity-80"
                 >
                   <EpisodeCover cover={episode.pages[0] ?? null} />
                 </Link>
-                <p className="mt-3 text-sm">第{index + 1}話</p>
-                <p className="mt-1 text-sm text-ink-muted">
+                <p>第{index + 1}話</p>
+                <p>
                   {formatDate(episode.created_at)} · {episode.page_count}
                   ページ
                 </p>
@@ -96,7 +93,7 @@ export default async function WorkPage({
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-ink-muted">公開中の話はありません。</p>
+          <p>公開中の話はありません。</p>
         )}
       </div>
       <SiteFooter />

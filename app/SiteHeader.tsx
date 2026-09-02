@@ -7,16 +7,14 @@ import Link from "next/link";
 // /new sends a signed-out visitor to the login page anyway.
 export function SiteHeader() {
   return (
-    <header className="flex items-center justify-between border-b border-line px-6 py-3 sm:px-10">
+    <header>
       <Link
         href="/"
-        className="font-display text-base tracking-[-0.02em] text-ink-strong"
       >
         Parari
       </Link>
       <Link
         href="/new"
-        className="text-sm underline-offset-4 hover:underline"
       >
         投稿する
       </Link>
