@@ -23,8 +23,21 @@ export function LoginButton({ next }: { next: string }) {
       type="button"
       onClick={signIn}
       disabled={pending}
-      className="border border-line px-6 py-3 font-label text-sm tracking-[0.1em] uppercase transition hover:bg-ink hover:text-surface disabled:opacity-50"
+      className="flex items-center gap-3 border border-line px-6 py-3 text-sm transition hover:bg-ink/5 disabled:opacity-50"
     >
+      {/* ブランドの取り扱いガイドラインは、独自のボタンにも Google の「G」を
+          標準色・縦横比のままで入れることを求めている。ロゴは 200x204 で正方形
+          ではないので、高さだけ指定して幅は比率に任せる。
+          色と書体は指定（塗り #FFFFFF / Roboto Medium）に寄せず、サイトの側に
+          合わせている。 */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/google-g.png"
+        alt=""
+        width={53}
+        height={54}
+        className="h-[18px] w-auto"
+      />
       {pending ? "ログインしています…" : "Google でログイン"}
     </button>
   );
