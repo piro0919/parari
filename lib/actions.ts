@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import {
+  deleteEpisodeObjects,
   deliveryKey,
   originalKey,
   presignDelivery,
@@ -18,6 +19,20 @@ async function requireUser() {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("ログインが必要です");
   return { supabase, user };
+}
+
+async function ownHandle(
+  supabase: Awaited<ReturnType<typeof requireUser>>["supabase"],
+  userId: string,
+) {
+  // `profiles` is world-readable, so this has to filter by id: an unfiltered
+  // `.single()` would match every author on the service.
+  const { data } = await supabase
+    .from("profiles")
+    .select("handle")
+    .eq("id", userId)
+    .maybeSingle();
+  return data?.handle ?? null;
 }
 
 // The handle becomes the URL, so it is the one thing an author has to type.
@@ -109,7 +124,7 @@ export async function publishEpisode(
   episodeId: string,
   pages: UploadedPage[],
 ) {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
 
   const { error: pagesError } = await supabase.from("pages").insert(
     pages.map((page) => ({
@@ -131,12 +146,53 @@ export async function publishEpisode(
 
   if (episodeError) throw new Error("公開できませんでした");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("handle")
-    .single();
-
-  if (profile) revalidatePath(`/${profile.handle}`);
+  const handle = await ownHandle(supabase, user.id);
+  if (handle) revalidatePath(`/${handle}`);
 
   return { episodeId };
+}
+
+// Row-level security is what actually decides ownership here: the update and
+// the delete match nothing when the caller is not the author, so an empty
+// result is a refusal, not a missing episode.
+export async function setEpisodeHidden(episodeId: string, hidden: boolean) {
+  const { supabase, user } = await requireUser();
+
+  const { data, error } = await supabase
+    .from("episodes")
+    .update({ status: hidden ? "hidden" : "published" })
+    .eq("id", episodeId)
+    // A half-uploaded episode has no business being published by this button.
+    .in("status", ["published", "hidden"])
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) throw new Error("変えられませんでした");
+
+  const handle = await ownHandle(supabase, user.id);
+  if (handle) {
+    revalidatePath(`/${handle}`);
+    revalidatePath(`/${handle}/${episodeId}`);
+  }
+}
+
+// The row goes first: it is what readers see, and an orphaned object in R2
+// costs a fraction of a cent. The reverse order would leave a published
+// episode pointing at images that are already gone.
+export async function deleteEpisode(episodeId: string) {
+  const { supabase, user } = await requireUser();
+
+  const { data, error } = await supabase
+    .from("episodes")
+    .delete()
+    .eq("id", episodeId)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) throw new Error("消せませんでした");
+
+  await deleteEpisodeObjects(episodeId);
+
+  const handle = await ownHandle(supabase, user.id);
+  if (handle) revalidatePath(`/${handle}`);
 }

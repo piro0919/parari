@@ -1,4 +1,9 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  ListObjectsV2Command,
+  DeleteObjectsCommand,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { CACHE_CONTROL } from "./cache-control";
 
@@ -53,4 +58,38 @@ export function presignDelivery(key: string) {
 
 export function presignOriginal(key: string, contentType: string) {
   return presign(ORIGINALS_BUCKET, key, contentType);
+}
+
+// Both buckets key everything under the episode id, so the prefix is the whole
+// episode. Listing beats deriving keys from the `pages` rows: an episode that
+// died mid-upload has objects in R2 and no rows at all.
+async function purgePrefix(bucket: string, prefix: string) {
+  let token: string | undefined;
+  do {
+    const listed = await client.send(
+      new ListObjectsV2Command({
+        Bucket: bucket,
+        Prefix: prefix,
+        ContinuationToken: token,
+      }),
+    );
+    const keys = listed.Contents?.map(({ Key }) => ({ Key: Key! })) ?? [];
+    if (keys.length) {
+      await client.send(
+        new DeleteObjectsCommand({
+          Bucket: bucket,
+          Delete: { Objects: keys },
+        }),
+      );
+    }
+    token = listed.NextContinuationToken;
+  } while (token);
+}
+
+export async function deleteEpisodeObjects(episodeId: string) {
+  const prefix = `${episodeId}/`;
+  await Promise.all([
+    purgePrefix(DELIVERY_BUCKET, prefix),
+    purgePrefix(ORIGINALS_BUCKET, prefix),
+  ]);
 }
