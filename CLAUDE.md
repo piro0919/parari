@@ -82,6 +82,24 @@ X API の無料枠は 2026-02-06 に廃止され、新規の開発者は従量�
 Vercel のデプロイ保護は `all_except_custom_domains`。
 parari.kkweb.io には最初からかからない。`*.vercel.app` の方だけが保護される。
 
+## デザインを差し替える
+
+見た目のトークンは役割の名前で `app/globals.css` の `@theme` に集めてある。別の
+デザインシステムに替えるときに触るのは、その値と `app/layout.tsx` の next/font だけ。
+`bg-parchment` のような由来の名前をコンポーネント側に持ち込むと、暗い系に替えたときに
+名前が嘘をつくので使わない。
+
+いまの値は Miranda（styles.refero.design）。あのサイトは各スタイルの CSS Variables と
+Tailwind v4 のブロックをそのまま配っている。
+
+**書体は色ほど簡単に替わらない。** 向こうが挙げる書体は欧文専用のことが多く、日本語を
+持たない。見出しだけ黙ってフォールバックするので、日本語の入る書体に読み替える。
+next/font は `subsets: ["latin"]` でも日本語の字形を含む `@font-face` を自前配信するので、
+Shippori Mincho のような和文書体はそのまま使える。
+
+**色と形は替わっても、組み方は替わらない。** トップ先頭の全幅の帯は Miranda の署名
+パターンで、系統を替えるなら形ごと置き換える判断が要る。
+
 ## 落とし穴
 
 - **react-comic-viewer は 1.1.3 以上を使う。** 1.1.2 以前は tsup が `.module.css` を横取りして

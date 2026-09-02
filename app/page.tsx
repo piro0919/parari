@@ -25,7 +25,7 @@ export default async function Home() {
       {/* The broadsheet banner: ink block, the name set huge and tight enough
           that the letters nearly touch. Latin-only word, so the display serif
           applies cleanly. */}
-      <section className="bg-ink-black px-6 py-8 text-parchment">
+      <section className="bg-ink px-6 py-8 text-surface">
         {/* Sized so the six letters span the block: the banner only reads as a
             banner when the word fills it. */}
         <h1 className="font-display text-[clamp(3.5rem,26vw,21rem)] leading-[0.78] font-medium tracking-[-0.05em]">
@@ -34,14 +34,14 @@ export default async function Home() {
       </section>
 
       <div className="mx-auto w-full max-w-[1440px] px-6">
-        <div className="flex flex-col gap-6 border-b border-ink-black/25 py-11 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-6 border-b border-ink/25 py-11 sm:flex-row sm:items-end sm:justify-between">
           <p className="max-w-md text-base leading-relaxed">
             描いた漫画を置いておく場所です。画像を落とすだけで読める形になります。
             読む側にログインは要りません。
           </p>
           <Link
             href="/new"
-            className="shrink-0 self-start rounded-tag bg-ink-black px-6 py-3 text-sm text-parchment transition hover:bg-black sm:self-auto"
+            className="shrink-0 self-start rounded-control bg-ink px-6 py-3 text-sm text-surface transition hover:bg-ink-strong sm:self-auto"
           >
             置いてみる
           </Link>
@@ -49,7 +49,7 @@ export default async function Home() {
 
         {episodes?.length ? (
           <section className="py-11">
-            <h2 className="text-sm tracking-[0.2em] text-charcoal">
+            <h2 className="text-sm tracking-[0.2em] text-ink-muted">
               あたらしい話
             </h2>
             <ul className="mt-6 grid grid-cols-2 gap-x-[14px] gap-y-11 sm:grid-cols-3 md:grid-cols-4">
@@ -64,7 +64,7 @@ export default async function Home() {
                         are the print language. */}
                     <Link
                       href={`/${author.handle}/${episode.id}`}
-                      className="block overflow-hidden shadow-ink transition hover:opacity-90"
+                      className="block overflow-hidden shadow-raised transition hover:opacity-90"
                     >
                       <EpisodeCover cover={episode.pages[0] ?? null} />
                     </Link>
@@ -84,7 +84,7 @@ export default async function Home() {
                     >
                       {author.handle}
                     </Link>
-                    <p className="mt-1 text-sm text-charcoal">
+                    <p className="mt-1 text-sm text-ink-muted">
                       {formatDate(episode.created_at)} · {episode.page_count}
                       ページ
                     </p>
