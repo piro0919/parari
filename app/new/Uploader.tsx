@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   createEpisode,
+  deleteEpisode,
   publishEpisode,
   type UploadedPage,
 } from "@/lib/actions";
@@ -65,6 +66,11 @@ export function Uploader({ handle }: { handle: string }) {
     }
 
     setError(null);
+    // Held outside the try so a failure can take the row back out. An episode
+    // that never finished is invisible to readers but sits on the author's
+    // shelf, and the cost of dropping it is one more drop of the same files.
+    let created: string | null = null;
+
     try {
       setProgress(`変換中 0 / ${files.length}`);
       const converted: Converted[] = [];
@@ -80,6 +86,8 @@ export function Uploader({ handle }: { handle: string }) {
           originalContentType: file.type,
         })),
       );
+
+      created = episodeId;
 
       let done = 0;
       setProgress(`送信中 0 / ${files.length}`);
@@ -107,6 +115,10 @@ export function Uploader({ handle }: { handle: string }) {
       await publishEpisode(episodeId, uploaded);
       router.push(`/${handle}/${episodeId}`);
     } catch (cause) {
+      if (created) {
+        // Best effort: the error the author sees is the upload's, not this.
+        await deleteEpisode(created).catch(() => {});
+      }
       setProgress(null);
       setError(cause instanceof Error ? cause.message : "失敗しました");
     }
