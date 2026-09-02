@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { publicUrl } from "@/lib/r2";
+import { formatDate } from "@/lib/date";
 import { signOut } from "@/lib/actions";
+import { EpisodeCover } from "@/app/EpisodeCover";
 import { EpisodeControls } from "./EpisodeControls";
 import { XLink } from "./XLink";
 
@@ -53,7 +54,13 @@ export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">
       <div className="flex items-baseline justify-between gap-4">
         <div>
-          <h1 className="font-mono text-xl font-semibold tracking-tight">
+          <Link
+            href="/"
+            className="text-xs text-black/40 underline-offset-4 hover:underline dark:text-white/40"
+          >
+            Parari
+          </Link>
+          <h1 className="mt-1 font-mono text-xl font-semibold tracking-tight">
             {profile.handle}
           </h1>
           <XLink xHandle={profile.x_handle} isOwner={isOwner} />
@@ -88,21 +95,7 @@ export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
             const frame = `block overflow-hidden rounded-lg border border-black/10 dark:border-white/15 ${
               isOwner && episode.status !== "published" ? "opacity-40" : ""
             }`;
-            const tile = cover ? (
-              // Sizes vary per page, so a plain <img> beats next/image here:
-              // the file is already resized and on a CDN.
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={publicUrl(cover.object_key)}
-                alt=""
-                width={cover.width}
-                height={cover.height}
-                loading="lazy"
-                className="h-auto w-full"
-              />
-            ) : (
-              <div className="aspect-[3/4] w-full bg-black/5 dark:bg-white/10" />
-            );
+            const tile = <EpisodeCover cover={cover ?? null} />;
 
             return (
               <li key={episode.id}>
@@ -119,7 +112,7 @@ export default async function AuthorPage({ params }: PageProps<"/[handle]">) {
                   </Link>
                 )}
                 <p className="mt-1.5 text-xs text-black/50 dark:text-white/50">
-                  {new Date(episode.created_at).toLocaleDateString("ja-JP")} ·{" "}
+                  {formatDate(episode.created_at)} ·{" "}
                   {episode.page_count}ページ
                   {episode.status === "hidden" ? " · 下書き" : ""}
                 </p>
