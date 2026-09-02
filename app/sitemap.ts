@@ -10,19 +10,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createAnonClient();
   const url = (path: string) => new URL(path, SITE_URL).toString();
 
-  const [{ data: profiles }, { data: episodes }] = await Promise.all([
-    supabase.from("profiles").select("handle"),
-    supabase
-      .from("episodes")
-      .select("id, created_at, profiles!inner(handle)")
-      .eq("status", "published")
-      .order("created_at", { ascending: false }),
-  ]);
+  const [{ data: profiles }, { data: works }, { data: episodes }] =
+    await Promise.all([
+      supabase.from("profiles").select("handle"),
+      supabase.from("works").select("id, profiles!inner(handle)"),
+      supabase
+        .from("episodes")
+        .select("id, created_at, profiles!inner(handle)")
+        .eq("status", "published")
+        .order("created_at", { ascending: false }),
+    ]);
 
   return [
     { url: url("/"), changeFrequency: "daily" as const, priority: 1 },
     ...(profiles ?? []).map((profile) => ({
       url: url(`/${profile.handle}`),
+      changeFrequency: "weekly" as const,
+    })),
+    ...(works ?? []).map((work) => ({
+      url: url(`/${[work.profiles].flat()[0].handle}/works/${work.id}`),
       changeFrequency: "weekly" as const,
     })),
     ...(episodes ?? []).map((episode) => {

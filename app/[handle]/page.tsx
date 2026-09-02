@@ -48,7 +48,7 @@ export default async function AuthorPage({
   let query = supabase
     .from("episodes")
     .select(
-      "id, created_at, page_count, status, pages(object_key, width, height)",
+      "id, created_at, page_count, status, work_id, works(title), pages(object_key, width, height)",
       { count: "exact" },
     )
     .eq("author_id", profile.id)
@@ -62,6 +62,15 @@ export default async function AuthorPage({
 
   const { data: episodes, count } = await query;
   const hasNext = (count ?? 0) > page * PER_PAGE;
+
+  // Only the author picks works, so only the author needs the list.
+  const { data: works } = isOwner
+    ? await supabase
+        .from("works")
+        .select("id, title")
+        .eq("author_id", profile.id)
+        .order("created_at", { ascending: false })
+    : { data: null };
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">
@@ -109,6 +118,9 @@ export default async function AuthorPage({
               isOwner && episode.status !== "published" ? "opacity-40" : ""
             }`;
             const tile = <EpisodeCover cover={cover ?? null} />;
+            // A many-to-one embed comes back as a single row, but without
+            // generated database types the client still types it as an array.
+            const work = episode.work_id ? [episode.works].flat()[0] : null;
 
             return (
               <li key={episode.id}>
@@ -124,6 +136,14 @@ export default async function AuthorPage({
                     {tile}
                   </Link>
                 )}
+                {work ? (
+                  <Link
+                    href={`/${handle}/works/${episode.work_id}`}
+                    className="mt-1.5 block text-xs text-black/70 underline-offset-4 hover:underline dark:text-white/70"
+                  >
+                    {work.title}
+                  </Link>
+                ) : null}
                 <p className="mt-1.5 text-xs text-black/50 dark:text-white/50">
                   {formatDate(episode.created_at)} ·{" "}
                   {episode.page_count}ページ
@@ -133,6 +153,8 @@ export default async function AuthorPage({
                   <EpisodeControls
                     episodeId={episode.id}
                     status={episode.status}
+                    workId={episode.work_id}
+                    works={works ?? []}
                   />
                 ) : null}
               </li>

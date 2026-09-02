@@ -91,6 +91,51 @@ export async function setXHandle(_prev: unknown, formData: FormData) {
   return { error: null, saved: true };
 }
 
+// A work is a label an author puts on episodes after the fact, so creating one
+// and hanging an episode on it are two steps, not one form.
+export async function createWork(title: string) {
+  const { supabase, user } = await requireUser();
+  const trimmed = title.trim();
+
+  if (!trimmed || trimmed.length > 60) {
+    throw new Error("作品名は1〜60文字で決めてください");
+  }
+
+  const { data, error } = await supabase
+    .from("works")
+    .insert({ author_id: user.id, title: trimmed })
+    .select("id")
+    .single();
+
+  if (error || !data) throw new Error("作品を作れませんでした");
+
+  const handle = await ownHandle(supabase, user.id);
+  if (handle) revalidatePath(`/${handle}`);
+
+  return { workId: data.id as string };
+}
+
+// `null` takes the episode back out of its work. Row-level security keeps both
+// the episode and the work inside the caller's own shelf.
+export async function setEpisodeWork(episodeId: string, workId: string | null) {
+  const { supabase, user } = await requireUser();
+
+  const { data, error } = await supabase
+    .from("episodes")
+    .update({ work_id: workId })
+    .eq("id", episodeId)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) throw new Error("まとめられませんでした");
+
+  const handle = await ownHandle(supabase, user.id);
+  if (handle) {
+    revalidatePath(`/${handle}`);
+    revalidatePath(`/${handle}/${episodeId}`);
+  }
+}
+
 // Posted as a plain form action, so it has to end somewhere: the top page is
 // the only one that reads the same signed in or out.
 export async function signOut() {
