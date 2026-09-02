@@ -7,6 +7,8 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { CACHE_CONTROL } from "./cache-control";
 
+export { deliveryKey, originalKey, publicUrl } from "./keys";
+
 // R2 speaks the S3 API. Region is always "auto".
 const client = new S3Client({
   region: "auto",
@@ -22,22 +24,6 @@ const client = new S3Client({
 // key from the delivery key and pull the uncompressed art.
 const DELIVERY_BUCKET = process.env.R2_BUCKET!;
 const ORIGINALS_BUCKET = process.env.R2_ORIGINALS_BUCKET!;
-
-export function deliveryKey(episodeId: string, pageIndex: number) {
-  return `${episodeId}/${String(pageIndex).padStart(3, "0")}.webp`;
-}
-
-export function originalKey(
-  episodeId: string,
-  pageIndex: number,
-  extension: string,
-) {
-  return `${episodeId}/${String(pageIndex).padStart(3, "0")}.${extension}`;
-}
-
-export function publicUrl(key: string) {
-  return `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${key}`;
-}
 
 function presign(bucket: string, key: string, contentType: string) {
   return getSignedUrl(

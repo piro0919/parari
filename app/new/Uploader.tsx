@@ -9,6 +9,7 @@ import {
   type UploadedPage,
 } from "@/lib/actions";
 import { CACHE_CONTROL } from "@/lib/r2/cache-control";
+import { orderPages } from "@/lib/page-order";
 
 // Long edge and quality agreed up front: Twitter-bound manga is drawn around
 // 2048px tall, and WebP holds thin lines and lettering better than JPEG.
@@ -56,9 +57,7 @@ export function Uploader({ handle }: { handle: string }) {
     if (!fileList?.length) return;
 
     // No ordering UI: file name order is what the author already uses.
-    const files = Array.from(fileList)
-      .filter((file) => file.type.startsWith("image/"))
-      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    const files = orderPages(Array.from(fileList));
 
     if (!files.length) {
       setError("画像が見つかりませんでした");

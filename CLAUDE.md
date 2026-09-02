@@ -21,6 +21,12 @@ npm run dev         # http://localhost:3001
 set -a && . ./.env.local && set +a && supabase start
 ```
 
+ふるまいのテストは vitest。DB も起動も要らない。
+
+```sh
+npm test
+```
+
 行レベルセキュリティは pgTAP で確かめる。`supabase start` が動いていることが要る。
 
 ```sh
