@@ -22,79 +22,72 @@ export default async function Home() {
 
   return (
     <main className="flex-1">
-      {/* The broadsheet banner: ink block, the name set huge and tight enough
-          that the letters nearly touch. Latin-only word, so the display serif
-          applies cleanly. */}
-      <section className="bg-ink px-6 py-8 text-surface">
-        {/* Sized so the six letters span the block: the banner only reads as a
-            banner when the word fills it. */}
-        <h1 className="font-display text-[clamp(3.5rem,26vw,21rem)] leading-[0.78] font-medium tracking-[-0.05em]">
-          PARARI
-        </h1>
-      </section>
-
-      <div className="mx-auto w-full max-w-[1440px] px-6">
-        <div className="flex flex-col gap-6 border-b border-ink/25 py-11 sm:flex-row sm:items-end sm:justify-between">
-          <p className="max-w-md text-base leading-relaxed">
+      {/* No banner here: a full-width dark block on a dark canvas is nothing.
+          This system separates with hairlines and lets the type carry it. */}
+      <section className="border-b border-line">
+        <div className="mx-auto w-full max-w-[1200px] px-6 py-24">
+          <h1 className="font-display text-[clamp(2.5rem,7vw,4.5rem)] leading-none font-medium tracking-[-0.022em] text-ink-strong">
+            Parari
+          </h1>
+          <p className="mt-6 max-w-md text-[15px] leading-relaxed text-ink-muted">
             描いた漫画を置いておく場所です。画像を落とすだけで読める形になります。
             読む側にログインは要りません。
           </p>
+          {/* The single primary action on the page, and the only chromatic
+              element anywhere in the system. */}
           <Link
             href="/new"
-            className="shrink-0 self-start rounded-control bg-ink px-6 py-3 text-sm text-surface transition hover:bg-ink-strong sm:self-auto"
+            className="mt-8 inline-block rounded-control bg-accent px-5 py-2.5 text-sm font-medium text-surface transition hover:opacity-90"
           >
             置いてみる
           </Link>
         </div>
+      </section>
 
-        {episodes?.length ? (
-          <section className="py-11">
-            <h2 className="text-sm tracking-[0.2em] text-ink-muted">
-              あたらしい話
-            </h2>
-            <ul className="mt-6 grid grid-cols-2 gap-x-[14px] gap-y-11 sm:grid-cols-3 md:grid-cols-4">
-              {episodes.map((episode) => {
-                // A many-to-one embed comes back as a single row, but without
-                // generated database types the client still types it as an array.
-                const author = [episode.profiles].flat()[0];
-                const work = episode.work_id ? [episode.works].flat()[0] : null;
-                return (
-                  <li key={episode.id}>
-                    {/* Images bleed to the edge with no radius — sharp corners
-                        are the print language. */}
+      {episodes?.length ? (
+        <section className="mx-auto w-full max-w-[1200px] px-6 py-24">
+          <h2 className="text-[13px] text-ink-muted">あたらしい話</h2>
+          <ul className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
+            {episodes.map((episode) => {
+              // A many-to-one embed comes back as a single row, but without
+              // generated database types the client still types it as an array.
+              const author = [episode.profiles].flat()[0];
+              const work = episode.work_id ? [episode.works].flat()[0] : null;
+              return (
+                <li key={episode.id}>
+                  {/* Elevation comes from a hairline border, never a shadow. */}
+                  <Link
+                    href={`/${author.handle}/${episode.id}`}
+                    className="block overflow-hidden rounded-panel border border-line bg-surface-raised transition hover:border-ink-muted"
+                  >
+                    <EpisodeCover cover={episode.pages[0] ?? null} />
+                  </Link>
+                  {work ? (
                     <Link
-                      href={`/${author.handle}/${episode.id}`}
-                      className="block overflow-hidden shadow-raised transition hover:opacity-90"
+                      href={`/${author.handle}/works/${episode.work_id}`}
+                      className="mt-3 block text-[15px] leading-tight text-ink underline-offset-4 hover:underline"
                     >
-                      <EpisodeCover cover={episode.pages[0] ?? null} />
+                      {work.title}
                     </Link>
-                    {work ? (
-                      <Link
-                        href={`/${author.handle}/works/${episode.work_id}`}
-                        className="mt-3.5 block text-base leading-tight underline-offset-4 hover:underline"
-                      >
-                        {work.title}
-                      </Link>
-                    ) : null}
-                    {/* The handle is the other half of the loop: a reader who
-                        liked one episode goes to the rest from here. */}
-                    <Link
-                      href={`/${author.handle}`}
-                      className="mt-1 block font-display text-sm underline-offset-4 hover:underline"
-                    >
-                      {author.handle}
-                    </Link>
-                    <p className="mt-1 text-sm text-ink-muted">
-                      {formatDate(episode.created_at)} · {episode.page_count}
-                      ページ
-                    </p>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        ) : null}
-      </div>
+                  ) : null}
+                  {/* The handle is the other half of the loop: a reader who
+                      liked one episode goes to the rest from here. */}
+                  <Link
+                    href={`/${author.handle}`}
+                    className="mt-2 block text-[13px] text-ink underline-offset-4 hover:underline"
+                  >
+                    {author.handle}
+                  </Link>
+                  <p className="mt-1 text-[13px] text-ink-muted">
+                    {formatDate(episode.created_at)} · {episode.page_count}
+                    ページ
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
     </main>
   );
 }

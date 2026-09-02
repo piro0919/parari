@@ -2,37 +2,41 @@
 
 /* トークンは役割の名前で持つ。デザインシステムを差し替えるときに触るのは、
    この @theme の値と layout.tsx の next/font の2箇所だけで済ませる。
-   いまの値は Miranda（styles.refero.design）— 温かい羊皮紙に黒インク。
-   書体だけは借りていない。あちらの4書体はどれも日本語を持たないので、
-   日本語の入る明朝に読み替えてある。 */
+   いまの値は Linear（styles.refero.design）— 暗がりを地として扱う精密機械。
+   書体だけは借りていない。Inter は日本語を持たないので、和文は同じ400〜510の
+   重みの帯に収まるゴシックに読み替えてある。 */
 @theme {
-  /* 面 */
-  --color-surface: #e2dedb;
-  --color-surface-raised: #cdc6be;
+  /* 面。暗さはテーマではなく下地 */
+  --color-surface: #08090a;
+  --color-surface-raised: #0f1011;
+  /* 影ではなく髪の毛のような罫で面を分ける。これがこの系の要 */
+  --color-line: #23252a;
 
-  /* 文字と罫 */
-  --color-ink: #1d1d1b;
-  --color-ink-strong: #000000;
-  --color-ink-muted: #69645f;
+  /* 文字 */
+  --color-ink: #e5e5e6;
+  --color-ink-strong: #ffffff;
+  --color-ink-muted: #8a8f98;
 
-  /* 差し色はひとつだけ。増やすと、他が無彩色である意味が消える */
-  --color-accent: #c03f13;
+  /* 差し色はひとつだけ。一画面にひとつの主行動にしか当てない */
+  --color-accent: #e4f222;
 
-  /* 本文も見出しも明朝一本。劇的さは書体の切り替えではなく、大きさと詰めで出す */
-  --font-body: var(--font-shippori-mincho), "Hiragino Mincho ProN",
-    "Yu Mincho", serif;
-  /* 欧文だけの語（Parari、作者ID）に当てる見出し用 */
-  --font-display: var(--font-playfair), Georgia, serif;
+  /* 欧文は Inter、和文はゴシック。順番が逆だと欧文まで和文書体で出る */
+  --font-body: var(--font-inter), var(--font-noto-sans-jp), system-ui,
+    sans-serif;
+  --font-display: var(--font-inter), var(--font-noto-sans-jp), system-ui,
+    sans-serif;
 
-  --radius-control: 2.88px;
-  --radius-panel: 11.52px;
+  /* 半径の語彙は3つだけ。ボタン6px、カード12px、丸薬9999px */
+  --radius-control: 6px;
+  --radius-panel: 12px;
 
-  /* 紙に落ちる影。左上から差す方向まで含めて Miranda の指定どおり */
-  --shadow-raised: rgba(29, 29, 27, 0.2) -4px 4px 6px 0px;
+  --shadow-raised: rgba(0, 0, 0, 0.4) 0px 2px 4px 0px;
 }
 
 body {
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
+  /* 48px 以上は -0.022em。詰めはこの系では譲れないと明記されている */
+  letter-spacing: -0.011em;
 }
