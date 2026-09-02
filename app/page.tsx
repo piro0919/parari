@@ -22,50 +22,58 @@ export default async function Home() {
 
   return (
     <main className="flex-1">
-      {/* No banner here: a full-width dark block on a dark canvas is nothing.
-          This system separates with hairlines and lets the type carry it. */}
-      <section className="border-b border-line">
-        <div className="mx-auto w-full max-w-[1200px] px-6 py-24">
-          <h1 className="font-display text-[clamp(2.5rem,7vw,4.5rem)] leading-none font-medium tracking-[-0.022em] text-ink-strong">
-            Parari
-          </h1>
-          <p className="mt-6 max-w-md text-[15px] leading-relaxed text-ink-muted">
-            描いた漫画を置いておく場所です。画像を落とすだけで読める形になります。
-            読む側にログインは要りません。
-          </p>
-          {/* The single primary action on the page, and the only chromatic
-              element anywhere in the system. */}
-          <Link
-            href="/new"
-            className="mt-8 inline-block rounded-control bg-accent px-5 py-2.5 text-sm font-medium text-surface transition hover:opacity-90"
-          >
-            置いてみる
-          </Link>
-        </div>
+      {/* A contact sheet, not a landing page: a rule across the top, the name
+          set light and large, and nothing else competing with the covers. */}
+      <section className="border-b-2 border-line px-6 py-20 sm:px-10">
+        <p className="font-label text-xs tracking-[0.1em] uppercase">
+          Manga on the web
+        </p>
+        <h1 className="mt-4 text-[clamp(2.5rem,6vw,2.7rem)] leading-tight font-light tracking-[-0.02em] text-ink-strong">
+          Parari
+        </h1>
+        <p className="mt-4 max-w-md text-base leading-relaxed">
+          描いた漫画を置いておく場所です。画像を落とすだけで読める形になります。
+          読む側にログインは要りません。
+        </p>
+        {/* No accent colour exists in this system, so the one action is a
+            bordered rectangle like everything else. */}
+        <Link
+          href="/new"
+          className="mt-8 inline-block border border-line px-6 py-2.5 font-label text-sm tracking-[0.1em] uppercase transition hover:bg-ink hover:text-surface"
+        >
+          置いてみる
+        </Link>
       </section>
 
       {episodes?.length ? (
-        <section className="mx-auto w-full max-w-[1200px] px-6 py-24">
-          <h2 className="text-[13px] text-ink-muted">あたらしい話</h2>
-          <ul className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
+        <section className="px-6 py-16 sm:px-10">
+          <h2 className="font-label text-xs tracking-[0.1em] text-ink-muted uppercase">
+            New
+          </h2>
+          {/* Cells of a grid, divided by rules rather than boxed as cards. */}
+          {/* Rules are drawn by the cells themselves, so an incomplete row
+              ends where the cells end instead of trailing off. */}
+          <ul className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
             {episodes.map((episode) => {
               // A many-to-one embed comes back as a single row, but without
               // generated database types the client still types it as an array.
               const author = [episode.profiles].flat()[0];
               const work = episode.work_id ? [episode.works].flat()[0] : null;
               return (
-                <li key={episode.id}>
-                  {/* Elevation comes from a hairline border, never a shadow. */}
+                <li
+                  key={episode.id}
+                  className="border-t border-l border-line p-4 last:border-r [&:nth-child(2n)]:border-r sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-child(3n)]:border-r md:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(4n)]:border-r"
+                >
                   <Link
                     href={`/${author.handle}/${episode.id}`}
-                    className="block overflow-hidden rounded-panel border border-line bg-surface-raised transition hover:border-ink-muted"
+                    className="block transition hover:opacity-80"
                   >
                     <EpisodeCover cover={episode.pages[0] ?? null} />
                   </Link>
                   {work ? (
                     <Link
                       href={`/${author.handle}/works/${episode.work_id}`}
-                      className="mt-3 block text-[15px] leading-tight text-ink underline-offset-4 hover:underline"
+                      className="mt-3 block text-base leading-tight underline-offset-4 hover:underline"
                     >
                       {work.title}
                     </Link>
@@ -74,11 +82,11 @@ export default async function Home() {
                       liked one episode goes to the rest from here. */}
                   <Link
                     href={`/${author.handle}`}
-                    className="mt-2 block text-[13px] text-ink underline-offset-4 hover:underline"
+                    className="mt-1 block font-label text-sm tracking-[0.06em] uppercase underline-offset-4 hover:underline"
                   >
                     {author.handle}
                   </Link>
-                  <p className="mt-1 text-[13px] text-ink-muted">
+                  <p className="mt-1 text-sm text-ink-muted">
                     {formatDate(episode.created_at)} · {episode.page_count}
                     ページ
                   </p>

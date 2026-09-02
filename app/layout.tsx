@@ -1,21 +1,28 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Sans_JP } from "next/font/google";
+import { Barlow_Condensed, Inter, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 
-// 重みは 400〜510 の帯に収める。この系は太い字を使わない
+// 大きい字は軽く（300）、小さい字は普通（400）。太い字はこの系に無い
 const inter = Inter({
-  weight: ["400", "500"],
+  weight: ["300", "400"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
 });
 
 const notoSansJp = Noto_Sans_JP({
-  weight: ["400", "500"],
+  weight: ["300", "400"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-noto-sans-jp",
+});
+
+const barlowCondensed = Barlow_Condensed({
+  weight: ["400"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-barlow-condensed",
 });
 
 export const metadata: Metadata = {
@@ -31,7 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="ja"
-      className={`h-full antialiased ${inter.variable} ${notoSansJp.variable}`}
+      className={`h-full antialiased ${inter.variable} ${notoSansJp.variable} ${barlowCondensed.variable}`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

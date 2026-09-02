@@ -2,41 +2,41 @@
 
 /* トークンは役割の名前で持つ。デザインシステムを差し替えるときに触るのは、
    この @theme の値と layout.tsx の next/font の2箇所だけで済ませる。
-   いまの値は Linear（styles.refero.design）— 暗がりを地として扱う精密機械。
-   書体だけは借りていない。Inter は日本語を持たないので、和文は同じ400〜510の
-   重みの帯に収まるゴシックに読み替えてある。 */
+   いまの値は mono（styles.refero.design）— 白い壁のギャラリー。
+   影も階調も差し色も持たず、罫と余白と字だけで組む。色を持つのは表紙だけになる。
+   書体だけは借りていない。向こうの4書体はどれも日本語を持たないので、
+   代替として挙げられている Inter と、その後ろに和文ゴシックを置いている。 */
 @theme {
-  /* 面。暗さはテーマではなく下地 */
-  --color-surface: #08090a;
-  --color-surface-raised: #0f1011;
-  /* 影ではなく髪の毛のような罫で面を分ける。これがこの系の要 */
-  --color-line: #23252a;
+  /* 面は一枚だけ。カードを浮かせず、罫で仕切る */
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-line: #292929;
 
-  /* 文字 */
-  --color-ink: #e5e5e6;
-  --color-ink-strong: #ffffff;
-  --color-ink-muted: #8a8f98;
+  --color-ink: #292929;
+  --color-ink-strong: #000000;
+  /* mono が配るのはインク・紙・黒の3色だけ。控えめな字はインクを薄めて作る */
+  --color-ink-muted: #8a8a8a;
 
-  /* 差し色はひとつだけ。一画面にひとつの主行動にしか当てない */
-  --color-accent: #e4f222;
+  /* この系に差し色は無い。トークンだけ置いて、使わない */
+  --color-accent: #292929;
 
-  /* 欧文は Inter、和文はゴシック。順番が逆だと欧文まで和文書体で出る */
   --font-body: var(--font-inter), var(--font-noto-sans-jp), system-ui,
     sans-serif;
+  /* 大文字のラベル用。字幅の狭い面で、広い字間と対にする */
+  --font-label: var(--font-barlow-condensed), var(--font-noto-sans-jp),
+    system-ui, sans-serif;
   --font-display: var(--font-inter), var(--font-noto-sans-jp), system-ui,
     sans-serif;
 
-  /* 半径の語彙は3つだけ。ボタン6px、カード12px、丸薬9999px */
-  --radius-control: 6px;
-  --radius-panel: 12px;
+  /* 角丸ゼロ。すべて矩形で、境界は罫が引く */
+  --radius-control: 0px;
+  --radius-panel: 0px;
 
-  --shadow-raised: rgba(0, 0, 0, 0.4) 0px 2px 4px 0px;
+  --shadow-raised: none;
 }
 
 body {
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
-  /* 48px 以上は -0.022em。詰めはこの系では譲れないと明記されている */
-  letter-spacing: -0.011em;
 }
