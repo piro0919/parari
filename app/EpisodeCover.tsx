@@ -11,7 +11,7 @@ export type Cover = {
 // frame.
 export function EpisodeCover({ cover }: { cover: Cover }) {
   if (!cover) {
-    return <div className="aspect-[3/4] w-full bg-black/5 dark:bg-white/10" />;
+    return <div className="aspect-[3/4] w-full bg-ink/5" />;
   }
 
   return (

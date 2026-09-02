@@ -16,8 +16,10 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-8 px-6">
       <div className="text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Parari</h1>
-        <p className="mt-2 text-sm text-black/60 dark:text-white/60">
+        <h1 className="text-3xl font-light tracking-[-0.02em] text-ink-strong">
+          Parari
+        </h1>
+        <p className="mt-2 text-sm text-ink-muted">
           描いた人だけログインします。読む人は要りません。
         </p>
       </div>

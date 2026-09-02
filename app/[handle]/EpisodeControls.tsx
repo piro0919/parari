@@ -21,7 +21,7 @@ type Props = {
 const NEW_WORK = "__new";
 
 const BUTTON =
-  "rounded-full border border-black/15 px-2.5 py-1 text-xs transition hover:bg-black/5 disabled:opacity-40 dark:border-white/20 dark:hover:bg-white/10";
+  " border border-line px-2.5 py-1 text-xs transition hover:bg-ink/5 disabled:opacity-40  ";
 
 export function EpisodeControls({
   episodeId,
@@ -66,7 +66,7 @@ export function EpisodeControls({
         value={workId ?? ""}
         disabled={pending}
         onChange={(event) => assign(event.target.value)}
-        className="max-w-full rounded-full border border-black/15 px-2 py-1 text-xs disabled:opacity-40 dark:border-white/20 dark:bg-transparent"
+        className="max-w-full border border-line px-2 py-1 text-xs disabled:opacity-40"
       >
         <option value="">作品なし</option>
         {works.map((work) => (
@@ -79,7 +79,7 @@ export function EpisodeControls({
       {status === "processing" ? (
         // Nothing to show or hide: the upload never finished, so the only
         // useful action is getting rid of it.
-        <span className="text-xs text-amber-600 dark:text-amber-400">
+        <span className="text-xs text-ink-muted">
           未完成
         </span>
       ) : (
@@ -101,12 +101,12 @@ export function EpisodeControls({
           if (!confirm("この話を消します。元に戻せません。")) return;
           run(() => deleteEpisode(episodeId));
         }}
-        className={`${BUTTON} text-red-600 dark:text-red-400`}
+        className={`${BUTTON} text-danger`}
       >
         削除
       </button>
       {error ? (
-        <span className="text-xs text-red-600 dark:text-red-400">{error}</span>
+        <span className="text-xs text-danger">{error}</span>
       ) : null}
     </div>
   );

@@ -29,7 +29,7 @@ export function WorkList({ handle, works }: { handle: string; works: Work[] }) {
 
   return (
     <section className="mt-8">
-      <h2 className="text-xs font-medium tracking-wide text-black/40 dark:text-white/40">
+      <h2 className="text-xs font-medium tracking-wide text-ink-muted">
         作品
       </h2>
       <ul className="mt-2 flex flex-col gap-1.5">
@@ -49,7 +49,7 @@ export function WorkList({ handle, works }: { handle: string; works: Work[] }) {
                 if (!title?.trim() || title === work.title) return;
                 run(() => renameWork(work.id, title));
               }}
-              className="text-xs text-black/40 underline-offset-4 hover:underline disabled:opacity-40 dark:text-white/40"
+              className="text-xs text-ink-muted underline-offset-4 hover:underline disabled:opacity-40"
             >
               名前を変える
             </button>
@@ -66,7 +66,7 @@ export function WorkList({ handle, works }: { handle: string; works: Work[] }) {
                 }
                 run(() => deleteWork(work.id));
               }}
-              className="text-xs text-red-600/70 underline-offset-4 hover:underline disabled:opacity-40 dark:text-red-400/70"
+              className="text-xs text-danger underline-offset-4 hover:underline disabled:opacity-40"
             >
               削除
             </button>
@@ -74,7 +74,7 @@ export function WorkList({ handle, works }: { handle: string; works: Work[] }) {
         ))}
       </ul>
       {error ? (
-        <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>
+        <p className="mt-2 text-xs text-danger">{error}</p>
       ) : null}
     </section>
   );

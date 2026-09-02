@@ -19,6 +19,9 @@
 
   /* この系に差し色は無い。トークンだけ置いて、使わない */
   --color-accent: #292929;
+  /* mono には無い色。ただし「消す」と「失敗した」は他と見分けが付かないと
+     困るので、彩度を落とした赤をひとつだけ足している */
+  --color-danger: #a33a2b;
 
   --font-body: var(--font-inter), var(--font-noto-sans-jp), system-ui,
     sans-serif;

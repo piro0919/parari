@@ -136,10 +136,10 @@ export function Uploader({ handle }: { handle: string }) {
           setDragging(false);
           void upload(event.dataTransfer.files);
         }}
-        className={`flex h-64 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed px-6 text-center transition ${
+        className={`flex h-64 cursor-pointer flex-col items-center justify-center gap-2  border-2 border-dashed px-6 text-center transition ${
           dragging
-            ? "border-black bg-black/5 dark:border-white dark:bg-white/10"
-            : "border-black/15 dark:border-white/20"
+            ? "border-ink bg-ink/5  "
+            : "border-line "
         } ${progress ? "pointer-events-none opacity-60" : ""}`}
       >
         <input
@@ -154,13 +154,13 @@ export function Uploader({ handle }: { handle: string }) {
           {progress ?? "画像をここに落とす"}
         </span>
         {!progress ? (
-          <span className="text-xs text-black/50 dark:text-white/50">
+          <span className="text-xs text-ink-muted">
             ファイル名の順に並びます。タイトルは要りません
           </span>
         ) : null}
       </label>
       {error ? (
-        <p className="mt-3 text-xs text-red-600 dark:text-red-400">{error}</p>
+        <p className="mt-3 text-xs text-danger">{error}</p>
       ) : null}
     </div>
   );

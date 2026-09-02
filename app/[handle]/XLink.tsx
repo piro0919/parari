@@ -35,7 +35,7 @@ export function XLink({
             href={`https://x.com/${xHandle}`}
             target="_blank"
             rel="me noreferrer"
-            className="text-black/60 underline-offset-4 hover:underline dark:text-white/60"
+            className="text-ink underline-offset-4 hover:underline"
           >
             @{xHandle} on X
           </a>
@@ -44,7 +44,7 @@ export function XLink({
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="text-black/40 underline-offset-4 hover:underline dark:text-white/40"
+            className="text-ink-muted underline-offset-4 hover:underline"
           >
             {xHandle ? "変える" : "X を並べる"}
           </button>
@@ -58,7 +58,7 @@ export function XLink({
       action={action}
       className="mt-2 flex items-center gap-2 text-xs"
     >
-      <span className="text-black/40 dark:text-white/40">x.com/</span>
+      <span className="text-ink-muted">x.com/</span>
       <input
         name="x_handle"
         defaultValue={xHandle ?? ""}
@@ -66,17 +66,17 @@ export function XLink({
         autoCapitalize="none"
         autoComplete="off"
         spellCheck={false}
-        className="w-40 rounded-lg border border-black/15 px-2 py-1 font-mono dark:border-white/20 dark:bg-transparent"
+        className="w-40 border border-line px-2 py-1 font-mono"
       />
       <button
         type="submit"
         disabled={pending}
-        className="rounded-full border border-black/15 px-2.5 py-1 transition hover:bg-black/5 disabled:opacity-40 dark:border-white/20 dark:hover:bg-white/10"
+        className="border border-line px-2.5 py-1 transition hover:bg-ink/5 disabled:opacity-40"
       >
         保存
       </button>
       {state?.error ? (
-        <span className="text-red-600 dark:text-red-400">{state.error}</span>
+        <span className="text-danger">{state.error}</span>
       ) : null}
     </form>
   );

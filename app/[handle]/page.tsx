@@ -74,126 +74,132 @@ export default async function AuthorPage({
     : { data: null };
 
   return (
-    <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">
-      <div className="flex items-baseline justify-between gap-4">
-        <div>
-          <Link
-            href="/"
-            className="text-xs text-black/40 underline-offset-4 hover:underline dark:text-white/40"
-          >
-            Parari
-          </Link>
-          <h1 className="mt-1 font-mono text-xl font-semibold tracking-tight">
-            {profile.handle}
-          </h1>
-          <XLink xHandle={profile.x_handle} isOwner={isOwner} />
-        </div>
-        {isOwner ? (
-          // The author lands here after posting, so this is where the way to
-          // post again belongs.
-          <div className="flex shrink-0 items-center gap-3 text-sm">
+    <main className="flex-1">
+      <section className="border-b-2 border-line px-6 py-14 sm:px-10">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
             <Link
-              href="/new"
-              className="rounded-full bg-black px-4 py-2 text-xs font-medium text-white transition hover:opacity-80 dark:bg-white dark:text-black"
+              href="/"
+              className="font-label text-xs tracking-[0.1em] text-ink-muted uppercase underline-offset-4 hover:underline"
             >
-              置く
+              Parari
             </Link>
-            <form action={signOut}>
-              <button
-                type="submit"
-                className="text-xs text-black/50 underline-offset-4 hover:underline dark:text-white/50"
-              >
-                ログアウト
-              </button>
-            </form>
+            <h1 className="mt-3 text-[clamp(2rem,5vw,2.5rem)] leading-tight font-light tracking-[-0.02em] text-ink-strong">
+              {profile.handle}
+            </h1>
+            <XLink xHandle={profile.x_handle} isOwner={isOwner} />
           </div>
+          {isOwner ? (
+            // The author lands here after posting, so this is where the way to
+            // post again belongs.
+            <div className="flex shrink-0 items-center gap-4">
+              <Link
+                href="/new"
+                className="border border-line px-5 py-2 font-label text-sm tracking-[0.1em] uppercase transition hover:bg-ink hover:text-surface"
+              >
+                置く
+              </Link>
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="text-xs text-ink-muted underline-offset-4 hover:underline"
+                >
+                  ログアウト
+                </button>
+              </form>
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      <div className="px-6 py-14 sm:px-10">
+        {isOwner ? <WorkList handle={handle} works={works ?? []} /> : null}
+
+        {episodes?.length ? (
+          // Rules are drawn by the cells themselves, so an incomplete row ends
+          // where the cells end instead of trailing off.
+          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+            {episodes.map((episode) => {
+              const cover = episode.pages[0];
+              const unfinished = episode.status === "processing";
+              const tile = <EpisodeCover cover={cover ?? null} />;
+              // A many-to-one embed comes back as a single row, but without
+              // generated database types the client still types it as an array.
+              const work = episode.work_id ? [episode.works].flat()[0] : null;
+              const frame = `block transition hover:opacity-80 ${
+                isOwner && episode.status !== "published" ? "opacity-40" : ""
+              }`;
+
+              return (
+                <li
+                  key={episode.id}
+                  className="border-t border-l border-line p-4 [&:nth-child(2n)]:border-r sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-child(3n)]:border-r md:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(4n)]:border-r"
+                >
+                  {/* An unfinished episode has no pages, so its page would 404.
+                      Leave it as a dead tile the author can only delete. */}
+                  {unfinished ? (
+                    <div className={frame}>{tile}</div>
+                  ) : (
+                    <Link href={`/${handle}/${episode.id}`} className={frame}>
+                      {tile}
+                    </Link>
+                  )}
+                  {work ? (
+                    <Link
+                      href={`/${handle}/works/${episode.work_id}`}
+                      className="mt-3 block text-base leading-tight underline-offset-4 hover:underline"
+                    >
+                      {work.title}
+                    </Link>
+                  ) : null}
+                  <p className="mt-1 text-sm text-ink-muted">
+                    {formatDate(episode.created_at)} · {episode.page_count}
+                    ページ
+                    {episode.status === "hidden" ? " · 下書き" : ""}
+                  </p>
+                  {isOwner ? (
+                    <EpisodeControls
+                      episodeId={episode.id}
+                      status={episode.status}
+                      workId={episode.work_id}
+                      works={works ?? []}
+                    />
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="text-sm text-ink-muted">
+            {page === 1 ? "まだ何もありません。" : "このページには何もありません。"}
+          </p>
+        )}
+
+        {page > 1 || hasNext ? (
+          <nav className="mt-10 flex items-center justify-between font-label text-sm tracking-[0.1em] uppercase">
+            {page > 1 ? (
+              <Link
+                href={page === 2 ? `/${handle}` : `/${handle}?page=${page - 1}`}
+                className="underline-offset-4 hover:underline"
+              >
+                ← Newer
+              </Link>
+            ) : (
+              <span />
+            )}
+            {hasNext ? (
+              <Link
+                href={`/${handle}?page=${page + 1}`}
+                className="underline-offset-4 hover:underline"
+              >
+                Older →
+              </Link>
+            ) : (
+              <span />
+            )}
+          </nav>
         ) : null}
       </div>
-
-      {isOwner ? <WorkList handle={handle} works={works ?? []} /> : null}
-
-      {episodes?.length ? (
-        <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-          {episodes.map((episode) => {
-            const cover = episode.pages[0];
-            const unfinished = episode.status === "processing";
-            const frame = `block overflow-hidden rounded-lg border border-black/10 dark:border-white/15 ${
-              isOwner && episode.status !== "published" ? "opacity-40" : ""
-            }`;
-            const tile = <EpisodeCover cover={cover ?? null} />;
-            // A many-to-one embed comes back as a single row, but without
-            // generated database types the client still types it as an array.
-            const work = episode.work_id ? [episode.works].flat()[0] : null;
-
-            return (
-              <li key={episode.id}>
-                {/* An unfinished episode has no pages, so its page would 404.
-                    Leave it as a dead tile the author can only delete. */}
-                {unfinished ? (
-                  <div className={frame}>{tile}</div>
-                ) : (
-                  <Link
-                    href={`/${handle}/${episode.id}`}
-                    className={`${frame} transition hover:opacity-80`}
-                  >
-                    {tile}
-                  </Link>
-                )}
-                {work ? (
-                  <Link
-                    href={`/${handle}/works/${episode.work_id}`}
-                    className="mt-1.5 block text-xs text-black/70 underline-offset-4 hover:underline dark:text-white/70"
-                  >
-                    {work.title}
-                  </Link>
-                ) : null}
-                <p className="mt-1.5 text-xs text-black/50 dark:text-white/50">
-                  {formatDate(episode.created_at)} ·{" "}
-                  {episode.page_count}ページ
-                  {episode.status === "hidden" ? " · 下書き" : ""}
-                </p>
-                {isOwner ? (
-                  <EpisodeControls
-                    episodeId={episode.id}
-                    status={episode.status}
-                    workId={episode.work_id}
-                    works={works ?? []}
-                  />
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <p className="mt-8 text-sm text-black/50 dark:text-white/50">
-          {page === 1 ? "まだ何もありません。" : "このページには何もありません。"}
-        </p>
-      )}
-
-      {page > 1 || hasNext ? (
-        <nav className="mt-10 flex items-center justify-between text-sm">
-          {page > 1 ? (
-            <Link
-              href={page === 2 ? `/${handle}` : `/${handle}?page=${page - 1}`}
-              className="text-black/60 underline-offset-4 hover:underline dark:text-white/60"
-            >
-              ← 新しい方へ
-            </Link>
-          ) : (
-            <span />
-          )}
-          {hasNext ? (
-            <Link
-              href={`/${handle}?page=${page + 1}`}
-              className="text-black/60 underline-offset-4 hover:underline dark:text-white/60"
-            >
-              古い方へ →
-            </Link>
-          ) : (
-            <span />
-          )}
-        </nav>
-      ) : null}
     </main>
   );
 }

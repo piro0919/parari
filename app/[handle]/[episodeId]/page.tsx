@@ -80,17 +80,17 @@ export default async function EpisodePage({
 
   return (
     <main className="flex flex-1 flex-col">
-      <header className="flex items-center justify-between gap-4 px-4 py-3">
+      <header className="flex items-center justify-between gap-4 border-b border-line px-6 py-3">
         <Link
           href={`/${handle}`}
-          className="text-sm text-black/60 underline-offset-4 hover:underline dark:text-white/60"
+          className="font-label text-sm tracking-[0.06em] uppercase underline-offset-4 hover:underline"
         >
           ← {handle}
         </Link>
         {work ? (
           <Link
             href={`/${handle}/works/${episode.work_id}`}
-            className="text-sm text-black/60 underline-offset-4 hover:underline dark:text-white/60"
+            className="text-sm text-ink underline-offset-4 hover:underline"
           >
             {work.title}
           </Link>
@@ -102,18 +102,18 @@ export default async function EpisodePage({
             href={`https://x.com/${author.x_handle}`}
             target="_blank"
             rel="me noreferrer"
-            className="text-xs text-black/50 underline-offset-4 hover:underline dark:text-white/50"
+            className="font-label text-xs tracking-[0.1em] text-ink-muted uppercase underline-offset-4 hover:underline"
           >
             @{author.x_handle} on X
           </a>
         ) : null}
       </header>
       <Viewer pages={pages} />
-      <footer className="flex items-center justify-between gap-4 px-4 py-4 text-sm">
+      <footer className="flex items-center justify-between gap-4 border-t border-line px-6 py-4 text-sm">
         {older ? (
           <Link
             href={`/${handle}/${older.id}`}
-            className="text-black/60 underline-offset-4 hover:underline dark:text-white/60"
+            className="text-ink underline-offset-4 hover:underline"
           >
             ← 前の話
           </Link>
@@ -123,7 +123,7 @@ export default async function EpisodePage({
         {newer ? (
           <Link
             href={`/${handle}/${newer.id}`}
-            className="text-black/60 underline-offset-4 hover:underline dark:text-white/60"
+            className="text-ink underline-offset-4 hover:underline"
           >
             次の話 →
           </Link>

@@ -25,7 +25,7 @@ export default async function NewEpisodePage() {
           <Uploader handle={profile.handle} />
           <Link
             href={`/${profile.handle}`}
-            className="text-xs text-black/50 underline-offset-4 hover:underline dark:text-white/50"
+            className="text-xs text-ink-muted underline-offset-4 hover:underline"
           >
             置いたものを見る
           </Link>
