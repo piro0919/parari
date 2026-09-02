@@ -36,7 +36,7 @@ export default async function EpisodePage({
   const { data: episode } = await supabase
     .from("episodes")
     .select(
-      "id, author_id, profiles!inner(handle, x_handle), pages(page_index, object_key)",
+      "id, author_id, created_at, profiles!inner(handle, x_handle), pages(page_index, object_key)",
     )
     .eq("id", episodeId)
     .eq("profiles.handle", handle)
@@ -47,6 +47,25 @@ export default async function EpisodePage({
   // A many-to-one embed comes back as a single row, but without generated
   // database types the client still types it as an array.
   const author = [episode.profiles].flat()[0];
+
+  // Neighbours by date, published only: finishing one episode and having to
+  // go back to the shelf for the next is exactly the friction Parari exists to
+  // remove. A hidden episode is not part of the sequence a reader follows.
+  const neighbour = (direction: "older" | "newer") =>
+    supabase
+      .from("episodes")
+      .select("id")
+      .eq("author_id", episode.author_id)
+      .eq("status", "published")
+      [direction === "older" ? "lt" : "gt"]("created_at", episode.created_at)
+      .order("created_at", { ascending: direction === "newer" })
+      .limit(1)
+      .maybeSingle();
+
+  const [{ data: older }, { data: newer }] = await Promise.all([
+    neighbour("older"),
+    neighbour("newer"),
+  ]);
 
   const pages = [...episode.pages]
     .sort((a, b) => a.page_index - b.page_index)
@@ -75,6 +94,28 @@ export default async function EpisodePage({
         ) : null}
       </header>
       <Viewer pages={pages} />
+      <footer className="flex items-center justify-between gap-4 px-4 py-4 text-sm">
+        {older ? (
+          <Link
+            href={`/${handle}/${older.id}`}
+            className="text-black/60 underline-offset-4 hover:underline dark:text-white/60"
+          >
+            ← 前の話
+          </Link>
+        ) : (
+          <span />
+        )}
+        {newer ? (
+          <Link
+            href={`/${handle}/${newer.id}`}
+            className="text-black/60 underline-offset-4 hover:underline dark:text-white/60"
+          >
+            次の話 →
+          </Link>
+        ) : (
+          <span />
+        )}
+      </footer>
     </main>
   );
 }
