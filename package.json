@@ -23,6 +23,7 @@
     "sharp": "^0.35.4"
   },
   "devDependencies": {
+    "@piro0919/eslint-config": "github:piro0919/eslint-config#v1.0.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
