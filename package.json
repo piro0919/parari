@@ -25,13 +25,13 @@
   "devDependencies": {
     "@piro0919/eslint-config": "github:piro0919/eslint-config#v1.0.0",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^26.6.7",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
     "tailwindcss": "^4",
-    "typescript": "^5",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.11"
   }
 }
